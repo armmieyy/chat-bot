@@ -1,0 +1,6 @@
+.backgroundbody {
+  /* background: lightblue url("/assets/images/bg.jpeg") no-repeat fixed center; */
+  background: url("/assets/images/bg1.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
