@@ -1,15 +1,11 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-/* utils */
-import { absoluteUrl, apiInstance } from '../middleware/utils';
-
 /* components */
 import Layout from '../components/layout/LayoutDefaultRigster';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from '@fortawesome/fontawesome-svg-core'
-import validator from 'validator'
 
 library.add(fas);
 

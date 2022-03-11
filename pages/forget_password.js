@@ -1,8 +1,7 @@
 import Link from 'next/link';
 
 import { useRouter } from 'next/router';
-/* utils */
-import { absoluteUrl, apiInstance } from '../middleware/utils';
+
 
 /* components */
 import Layout from '../components/layout/LayoutDefault';
@@ -30,51 +29,13 @@ const { Text, Title } = Typography;
 const { TextArea } = Input;
 
 export default function Register(props) {
-  const [api, contextHolder] = notification.useNotification();
-  const [url, setUrl] = useState('');
-  const { origin, baseApiUrl } = props;
-  const router = useRouter();
-
-  async function onSubmitHandler(value) {
-    const data = {
-      "email_user": value.email,
-    }
-
-    const forget_passwordData = await apiInstance().post(
-      '/forgetpassword/forget_password',
-      data,
-    );
-    if (forget_passwordData.data.status == 200) {
-      openNotificationForgetpasswordSuccess();
-    } else {
-      openNotificationForgetpasswordFail(forget_passwordData.data.message);
-    }
-  }
-
-  const openNotificationForgetpasswordSuccess = () => {
-    api.success({
-      message: `ส่งคำขอเรียบร้อยแล้ว`,
-      description: 'ส่งคำขอเรียบร้อยแล้ว',
-      placement: 'topRight',
-    });
-  };
-
-  const openNotificationForgetpasswordFail = messgae => {
-    api.error({
-      message: `พบปัญหาของคำขอร้องนี้`,
-      description: messgae,
-      placement: 'topRight',
-    });
-  };
+  
 
   return (
     <Layout
       title="Chat bot | Forget Password"
-      url={origin}
-      origin={origin}
       className="h-screen"
     >
-      {contextHolder}
       <div className="mx-auto w-full max-w-lg py-2">
         <div className="bg-white shadow-lg rounded px-12 pt-12 pb-8 mb-4 -m-10 mt-10">
           <Form
@@ -122,25 +83,6 @@ export default function Register(props) {
                   required: true,
                   message: 'กรุณากรอกอีเมลล์!'
                 },
-                {
-                  async validator(rule, value) {
-                    const data = {
-                      "email": value,
-                    }
-                    const checkEmail = await apiInstance().post('/forgetpassword/check-email', data);
-                    console.log()
-                    if (checkEmail.data.status == 200) {
-                      return Promise.resolve()
-
-                    } else {
-                      // openNotificationForgetpasswordFail(checkEmail.data.message)
-                      return Promise.reject(checkEmail.data.message)
-
-
-                    }
-
-                  },
-                },
               ]}
             >
               <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" size="large" placeholder="Email"
@@ -166,19 +108,4 @@ export default function Register(props) {
     </Layout>
   );
 }
-/* getServerSideProps */
-export async function getServerSideProps(context) {
-  const { req } = context;
-  const { origin } = absoluteUrl(req);
 
-  const referer = req.headers.referer || '';
-  const baseApiUrl = `${origin}/api`;
-
-  return {
-    props: {
-      origin,
-      baseApiUrl,
-      referer,
-    },
-  };
-}

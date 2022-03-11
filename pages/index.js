@@ -2,15 +2,13 @@ import Link from 'next/link';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/dist/client/router";
 import { app } from "../plugins/firebaseConfig"
-/* utils */
-import { absoluteUrl, apiInstance, checkIsLogin } from '../middleware/utils';
-import Cookies from 'js-cookie';
+
 /* components */
 import Layout from '../components/layout/LayoutDefault';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 library.add(fas);
 import {
@@ -46,7 +44,7 @@ function Login() {
   .then((userCredential) => {
     let user = userCredential.user;
     console.log(user);
-    route.push("/");
+    route.push("/dashboard");
   })
   .catch((error) => {
     const errorCode = error.code;
