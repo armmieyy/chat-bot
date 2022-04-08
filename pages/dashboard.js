@@ -1,4 +1,4 @@
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
 import { db } from "../plugins/firebaseConfig";
@@ -30,43 +30,7 @@ function Home({ }) {
   return (
     <div>
       <div>
-        <nav class="bg-blue-800">
-          <div class="max-w-7xl mr-auto px-2 sm:px-6 rl:px-8">
-            <div class="relative flex items-center justify-between h-16">
-              <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-                <div class="flex-shrink-0 flex items-center">
-                    </div>
-                    <div class="hidden sm:block sm:ml-2">
-                      <Sidebar signOut={signout} />
-                    </div>
-                </div>
-              </div>
-            </div>
-        </nav>
-      </div>
-      <div className="mt-32 flex flex-col">
-        <table class="shadow-lg bg-white border-collapse">
-          <tr>
-            <th class="bg-blue-300 border text-left px-8 py-4">ID LINE</th>
-            <th class="bg-blue-300 border text-left px-8 py-4">date</th>
-            <th class="bg-blue-300 border text-left px-8 py-4">Country</th>
-          </tr>
-          <tr>
-            <td class="border px-8 py-4">armmieyy</td>
-            <td class="border px-8 py-4">11/03/2565</td>
-            <td class="border px-8 py-4">Italy</td>
-          </tr>
-          <tr>
-            <td class="border px-8 py-4">jujutsu</td>
-            <td class="border px-8 py-4">12/03/2565</td>
-            <td class="border px-8 py-4">Spain</td>
-          </tr>
-          <tr>
-            <td class="border px-8 py-4">konami</td>
-            <td class="border px-8 py-4">13/03/2565</td>
-            <td class="border px-8 py-4">Austria</td>
-          </tr>
-        </table>
+        <Sidebar signOut={signout} />
       </div>
     </div>
   );
