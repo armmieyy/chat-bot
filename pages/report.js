@@ -30,6 +30,7 @@ function Home({ }) {
     <div>
       <div>
         <Sidebar signOut={signout}/>
+        <h1>luv ink</h1>
       </div>
     </div>
   );

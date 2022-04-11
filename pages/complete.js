@@ -30,6 +30,7 @@ function Home({ }) {
     <div>
       <div>
         <Sidebar signOut={signout}/>
+        <h1>inkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk</h1>
       </div>
     </div>
   );

@@ -1,43 +1,43 @@
-import Link from "next/link";
-function Sidebar({ signOut }) {
+import Link from 'next/link';
+
+function Navbar ({ signOut }) {
   return (
-    <nav class="bg-blue-700">
-      <div class="max-w-7xl mr-auto px-2 sm:px-6 rl:px-8">
-        <div class="relative flex items-center justify-between h-16">
-          <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="bg-blue-900 text-white px-6 py-0.5 rounded-md text-sm font-medium">
-              <li>
-                <Link href={"/"} passHref>
-                  <p className="p-1 hover:cursor-pointer">Dashboard</p>
-                </Link>
-              </li>
+    <>
+      <nav className='flex items-center flex-wrap bg-blue-800 p-3 '>
+          <a className='inline-flex items-center p-2 mr-4 '>
+            <div className='text-2xl text-white font-bold uppercase tracking-wide'>
+              แจ้งปัญหาภายในชุมชน
             </div>
-            <div className="bg-blue-900 text-white px-6 py-0.5 rounded-md text-sm font-medium">
-              <li>
-                <Link href={"/statTable"} passHref>
-                  <p className="p-1 font-prompt hover:cursor-pointer">
-                    สถิติ
-                  </p>
-                </Link>
-              </li>
-            </div>
-            <div className="bg-blue-900 text-white px-6 py-0.5 rounded-md text-sm font-medium">
-              <li
-                className=""
-                onClick={() => {
-                  signOut();
-                }}
-              >
-                <Link href={"#"} passHref>
-                  <p className="hover:cursor-pointer">Logout</p>
-                </Link>
-              </li>
-            </div>
+          </a>
+        <div className='hidden w-full lg:inline-flex lg:flex-grow lg:w-auto'>
+          <div className='lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto'>
+            <Link href='/report'>
+              <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white '>
+                Report
+              </a>
+            </Link>
+            <Link href='/complete'>
+              <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white'>
+                Complete
+              </a>
+            </Link>
+            <Link href='/dashboard'>
+              <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white'>
+                Dashboard
+              </a>
+            </Link>
+            <li className="" onClick={signOut}>
+            <Link href={"#"} passHref>
+              <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-red-600 hover:text-white'>
+                LogOut
+              </a>
+            </Link>
+            </li>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
-}
+};
 
-export default Sidebar;
+export default Navbar;
