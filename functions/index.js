@@ -28,9 +28,22 @@ const reply = (replyToken, payload) => {
 
 exports.helloWorld = functions.https.onRequest(async (req, res) => {
   let fetchData = [];
+  const kind = [
+    'ประปา',
+    'อื่นๆ',
+    'ถนน',
+    'ต้นไม้',
+    'ความสะอาด',
+    'ไฟฟ้า',
+    'ทางเท้า',
+    'จราจร จอดรถ',
+    'กลิ่น',
+    'เสียง',
+  ];
   const userId = req.body.events[0].source.userId;
   const message = req.body.events[0].message;
   const event = req.body.events[0];
+  console.log(req.body);
   const db = admin.database();
   const ref = db.ref('/order');
   await ref.on('value', async snapshot => {
@@ -43,8 +56,21 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
     item => item.status == 'inProgress' && item.uid === userId,
   );
 
+  if (event.type === 'unfollow') {
+    db.ref('/stat/friends').transaction(current_value => {
+      return (current_value || 0) - 1;
+    });
+    res.end();
+  }
+  if (event.type === 'follow') {
+    db.ref('/stat/friends').transaction(current_value => {
+      return (current_value || 0) + 1;
+    });
+    res.end();
+  }
+
   if (fetchData.length > 0) {
-    console.log(fetchData[0]);
+    // console.log(kind.indexOf(message.text));
     if (fetchData[0].image === '') {
       if (message.type === 'image') {
         let buffer;
@@ -76,12 +102,118 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
           });
         await reply(event.replyToken, {
           type: 'text',
-          text: 'โปรดส่งตำแหน่งที่ตั้ง',
+          text: 'โปรดเลือกประเภทปัญหาที่แจ้ง',
+          quickReply: {
+            items: [
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'ประปา',
+                  text: 'ประปา',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'ไฟฟ้า',
+                  text: 'ไฟฟ้า',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'ถนน',
+                  text: 'ถนน',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'ต้นไม้',
+                  text: 'ต้นไม้',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'ความสะอาด',
+                  text: 'ความสะอาด',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'ทางเท้า',
+                  text: 'ทางเท้า',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'จราจร จอดรถ',
+                  text: 'จราจร จอดรถ',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'กลิ่น',
+                  text: 'กลิ่น',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'เสียง',
+                  text: 'เสียง',
+                },
+              },
+              {
+                type: 'action',
+                action: {
+                  type: 'message',
+                  label: 'อื่นๆ',
+                  text: 'อื่นๆ',
+                },
+              },
+            ],
+          },
         });
       } else {
         await reply(event.replyToken, {
           type: 'text',
           text: 'โปรดส่งรูปภาพของปัญหาที่ต้องการแจ้ง',
+          quickReply: {
+            items: [
+              {
+                type: 'action',
+                imageUrl:
+                  'https://cdn.dribbble.com/users/3511384/screenshots/6601006/main-zoom---longer---dribbble2.gif',
+                action: {
+                  type: 'camera',
+                  label: 'กล้องถ่ายรูป',
+                },
+              },
+              {
+                type: 'action',
+                imageUrl:
+                  'https://www.pngfind.com/pngs/m/349-3497914_png-file-svg-album-icon-transparent-png.png',
+                action: {
+                  type: 'cameraRoll',
+                  label: 'อัลบั้ม',
+                },
+              },
+            ],
+          },
         });
       }
     } else {
@@ -102,6 +234,19 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
         await reply(event.replyToken, {
           type: 'text',
           text: 'โปรดส่งตำแหน่งที่ตั้ง',
+          quickReply: {
+            items: [
+              {
+                type: 'action',
+                imageUrl:
+                  'https://i.pinimg.com/originals/45/2c/3d/452c3deef1a83f6dee5ea526f3bcb5cf.gif',
+                action: {
+                  type: 'location',
+                  label: 'ส่งตำแหน่งที่อยู่',
+                },
+              },
+            ],
+          },
         });
       }
     }
@@ -136,6 +281,29 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
         await reply(event.replyToken, {
           type: 'text',
           text: 'โปรดส่งรูปภาพของปัญหาที่ต้องการแจ้ง',
+          quickReply: {
+            items: [
+              {
+                type: 'action',
+                imageUrl:
+                  'https://cdn.dribbble.com/users/3511384/screenshots/6601006/main-zoom---longer---dribbble2.gif',
+                action: {
+                  type: 'camera',
+                  label: 'กล้องถ่ายรูป',
+                },
+              },
+              {
+                type: 'action',
+
+                imageUrl:
+                  'https://www.pngfind.com/pngs/m/349-3497914_png-file-svg-album-icon-transparent-png.png',
+                action: {
+                  type: 'cameraRoll',
+                  label: 'อัลบั้ม',
+                },
+              },
+            ],
+          },
         });
         break;
       default:
