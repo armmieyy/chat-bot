@@ -1,20 +1,17 @@
 import Link from 'next/link';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "next/dist/client/router";
-import { app } from "../plugins/firebaseConfig"
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/dist/client/router';
+import { app } from '../plugins/firebaseConfig';
 
 /* components */
 import Layout from '../components/layout/LayoutDefault';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 
 library.add(fas);
-import {
-  UserOutlined,
-  LockOutlined
-} from '@ant-design/icons';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import {
   Carousel,
@@ -26,40 +23,38 @@ import {
   Input,
   Card,
   Form,
-  notification
+  notification,
 } from 'antd';
 
 const { Text, Title } = Typography;
 
 const { TextArea } = Input;
 
-
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const route = useRouter();
   const singIn = async (email, password) => {
-  const auth = getAuth();
-  await signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    let user = userCredential.user;
-    console.log(user);
-    route.push("/dashboard");
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-  });
-};
+    const auth = getAuth();
+    await signInWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        let user = userCredential.user;
+        console.log(user);
+        route.push('/dashboard');
+      })
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
 
   return (
-    <Layout title="Chat bot | Login Page"  className="h-screen">
+    <Layout title="Chat bot | Login Page" className="h-screen">
       <div className="mx-auto w-full max-w-md min-h-screen max-h-screen pt-20">
         <div className=" pb-8 m-auto">
-          <center><img
-            className="h-auto w-auto"
-            src={'assets/images/chat-bot.png'}
-          /></center>
+          <center>
+            <img className="h-auto w-auto" src={'assets/images/chat-bot.png'} />
+          </center>
         </div>
         <Form
           class="px-8 pt-2 pb-8 mb-4 pd-12"
@@ -79,9 +74,9 @@ function Login() {
               </a>
             </p>
           </div>
-          <Form.Item className="mb-8"
+          <Form.Item
             name="username"
-            className="block text-gray-700 text-sm font-bold mb-6 w-full"
+            className="block text-gray-700 mb-10 text-sm font-bold  w-full"
             rules={[{ required: true, message: 'กรุณากรอก ชื่อผู้ใช้!' }]}
           >
             <Input
@@ -92,14 +87,14 @@ function Login() {
               placeholder="Email"
               prefix={<UserOutlined />}
               value={email}
-              onChange={(e) => { 
+              onChange={e => {
                 setEmail(e.target.value);
               }}
             />
           </Form.Item>
-          <Form.Item className="mb-8"
+          <Form.Item
             name="password"
-            className="block text-gray-700 text-sm font-bold mb-2 w-full"
+            className="block mb-8 text-gray-700 text-sm font-bold  w-full"
             rules={[{ required: true, message: 'กรุณากรอก รหัสผ่าน!' }]}
           >
             <Input.Password
@@ -110,9 +105,9 @@ function Login() {
               placeholder="Password"
               prefix={<LockOutlined />}
               value={password}
-              onChange={(e) => {
+              onChange={e => {
                 setPassword(e.target.value);
-              }} 
+              }}
             />
           </Form.Item>
           <Form.Item className="text-center">
@@ -128,12 +123,13 @@ function Login() {
               className="bg-white text-blue-500 font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline w-full mb-3"
               onClick={() => singIn(email, password)}
             >
-              <div class="text-blue-600 font-bold">
-                LOGIN
-                </div>
+              <div class="text-blue-600 font-bold">LOGIN</div>
             </Button>
             <div class="pt-4">
-              <a href="/forget_password" className="text-white hover:text-gray-800 pl-72 pt-6">
+              <a
+                href="/forget_password"
+                className="text-white hover:text-gray-800 pl-72 pt-6"
+              >
                 ลืมรหัสผ่าน?
               </a>
             </div>
