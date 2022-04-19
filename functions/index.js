@@ -5,6 +5,8 @@ const os = require('os');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4, v4 } = require('uuid');
+const { async } = require('@firebase/util');
+const cors = require('cors')({origin: true});
 
 admin.initializeApp();
 const LINE_MESSAGING_API = 'https://api.line.me/v2/bot';
@@ -25,6 +27,13 @@ const reply = (replyToken, payload) => {
     }),
   });
 };
+
+exports.messageReply = functions.https.onRequest(async (req, res) => {
+  cors(req, res, () => {
+    console.log(req.body);
+    res.send("ok")
+  });
+});
 
 exports.helloWorld = functions.https.onRequest(async (req, res) => {
   let fetchData = [];
