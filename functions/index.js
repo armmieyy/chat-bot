@@ -231,6 +231,30 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
           text: 'กำลังกำเนินการส่งเรื่องโปรดรอตอบกลับจากเจ้าหน้าที่',
         });
       } else {
+        if (kind.indexOf(message.text) > -1) {
+          await db
+            .ref(`/order/${fetchData[0].id}`)
+            .update({ kind: message.text });
+          await reply(event.replyToken, {
+            type: 'text',
+            text: 'โปรดส่งตำแหน่งที่ตั้ง',
+            quickReply: {
+              items: [
+                {
+                  type: 'action',
+                  imageUrl:
+                    'https://i.pinimg.com/originals/45/2c/3d/452c3deef1a83f6dee5ea526f3bcb5cf.gif',
+                  action: {
+                    type: 'location',
+                    label: 'ส่งตำแหน่งที่อยู่',
+                  },
+                },
+              ],
+            },
+          });
+
+          return res.send('200');
+        }
         await reply(event.replyToken, {
           type: 'text',
           text: 'โปรดส่งตำแหน่งที่ตั้ง',
@@ -277,6 +301,7 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
           }),
           uid: userId,
           displayName: displayName,
+          kind: '',
         });
         await reply(event.replyToken, {
           type: 'text',
