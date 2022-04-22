@@ -40,8 +40,48 @@ function Reply() {
     await axios({
       method: 'post',
       url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
-      data: { textReply: textReply, uid: fetchData.uid, date: fetchData.date },
-    });
+      data: {
+        type: 'reply',
+        id: slug,
+        textReply: textReply,
+        title: fetchData.message,
+        status: fetchData.status,
+        image: fetchData.image,
+        uid: fetchData.uid,
+        date: fetchData.date,
+      },
+    })
+      .then(res => {
+        if (res.status === 200) {
+          router.push('/report');
+        }
+      })
+      .catch(err => {
+        alert(err);
+      });
+  };
+
+  const notInvoled = async () => {
+    await axios({
+      method: 'post',
+      url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
+      data: {
+        type: 'notInvoled',
+        id: slug,
+        uid: fetchData.uid,
+        title: fetchData.message,
+        date: fetchData.date,
+        displayName: fetchData.displayName,
+      },
+    })
+      .then(res => {
+        if (res.status === 200) {
+          router.push('/complete');
+        }
+      })
+      .catch(err => {
+        alert(err);
+      });
   };
 
   return (
@@ -145,6 +185,9 @@ function Reply() {
                   <button
                     className="p-2 bg-red-500 text-md border border-red-700 hover:bg-red-700 
                   rounded-lg text-white"
+                    onClick={() => {
+                      notInvoled();
+                    }}
                   >
                     ไม่เกี่ยวข้อง
                   </button>

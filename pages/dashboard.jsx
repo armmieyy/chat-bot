@@ -38,9 +38,9 @@ function Dashboard({}) {
   useEffect(() => {
     if (!fetchData) return;
     const wait = fetchData.filter(item => item.status === 'wait');
-    const done = fetchData.filter(item => item.status === 'done');
+    const complete = fetchData.filter(item => item.status === 'complete');
     const inProgress = fetchData.filter(item => item.status === 'inProgress');
-    const inapposite = fetchData.filter(item => item.status === 'inapposite');
+    const notInvoled = fetchData.filter(item => item.status === 'notInvoled');
     const elec = fetchData.filter(item => item.kind === 'ไฟฟ้า');
     const water = fetchData.filter(item => item.kind === 'ประปา');
     const street = fetchData.filter(item => item.kind === 'ถนน');
@@ -55,8 +55,8 @@ function Dashboard({}) {
       ...Card,
       inProgress: inProgress.length,
       wait: wait.length,
-      done: done.length,
-      inapposite: inapposite.length,
+      complete: complete.length,
+      notInvoled: notInvoled.length,
     });
     setKindStat({
       ...kindStat,
@@ -106,10 +106,10 @@ function Dashboard({}) {
             value={stat?.inProgress && stat.inProgress}
           />
           <Card label={'กำลังดำเนินการ'} value={stat?.wait && stat.wait} />
-          <Card label={'เสร็จสิ้น'} value={stat?.done && stat.done} />
+          <Card label={'เสร็จสิ้น'} value={stat?.complete && stat.complete} />
           <Card
             label={'ไม่เกี่ยวข้อง'}
-            value={stat?.inapposite && stat.inapposite}
+            value={stat?.notInvoled && stat.notInvoled}
           />
         </Row>
       </div>

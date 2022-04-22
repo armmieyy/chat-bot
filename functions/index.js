@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4, v4 } = require('uuid');
 const { async } = require('@firebase/util');
-const cors = require('cors')({origin: true});
+const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
 const LINE_MESSAGING_API = 'https://api.line.me/v2/bot';
@@ -27,11 +27,239 @@ const reply = (replyToken, payload) => {
     }),
   });
 };
+const pushMessage = (replyToken, payload) => {
+  request.post({
+    uri: `${LINE_MESSAGING_API}/message/push`,
+    headers: LINE_HEADER,
+    body: JSON.stringify({
+      to: replyToken,
+      messages: [payload],
+    }),
+  });
+};
 
 exports.messageReply = functions.https.onRequest(async (req, res) => {
-  cors(req, res, () => {
-    console.log(req.body);
-    res.send("ok")
+  cors(req, res, async () => {
+
+    if (req.body.type === 'complete') {
+      const db = admin.database();
+      const ref = db.ref(`/order/${req.body.id}`);
+      await ref.update({ status: 'complete' });
+      pushMessage(req.body.uid , {
+        type: 'flex',
+        altText: 'ดำเนินการเสร็จสิ้น',
+        contents: {
+          type: 'bubble',
+          hero: {
+            type: 'image',
+            url: `${req.body.image}`,
+            size: 'full',
+            aspectRatio: '20:13',
+            aspectMode: 'cover',
+          },
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: `${req.body.title}`,
+                weight: 'bold',
+                size: 'xl',
+              },
+              {
+                type: 'box',
+                layout: 'vertical',
+                margin: 'lg',
+                spacing: 'sm',
+                contents: [
+                  {
+                    type: 'box',
+                    layout: 'baseline',
+                    spacing: 'sm',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: 'วันที่แจ้ง',
+                        size: 'sm',
+                        flex: 2,
+                        wrap: true,
+                      },
+                      {
+                        type: 'text',
+                        text: `${req.body.date}`,
+                        wrap: true,
+                        color: '#666666',
+                        size: 'sm',
+                        flex: 5,
+                      },
+                    ],
+                  },
+                  {
+                    type: 'box',
+                    layout: 'baseline',
+                    spacing: 'sm',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: 'สถานะ',
+                        size: 'sm',
+                        flex: 2,
+                      },
+                      {
+                        type: 'text',
+                        text: 'ดำเนินการเสร็จสิ้น',
+                        wrap: true,
+                        color: '#0ffe00',
+                        size: 'sm',
+                        flex: 5,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          
+        },
+      });
+      res.send("ok")
+    }
+
+    if (req.body.type === 'reply') {
+      const db = admin.database();
+      const ref = db.ref(`/order/${req.body.id}`);
+      await ref.update({ status: 'receive' });
+      pushMessage(req.body.uid, {
+        type: 'flex',
+        altText: 'ทางเราได้รับเรื่องแล้ว',
+        contents: {
+          type: 'bubble',
+          hero: {
+            type: 'image',
+            url: `${req.body.image}`,
+            size: 'full',
+            aspectRatio: '20:13',
+            aspectMode: 'cover',
+          },
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: `${req.body.title}`,
+                weight: 'bold',
+                size: 'xl',
+              },
+              {
+                type: 'box',
+                layout: 'vertical',
+                margin: 'lg',
+                spacing: 'sm',
+                contents: [
+                  {
+                    type: 'box',
+                    layout: 'baseline',
+                    spacing: 'sm',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: 'วันที่แจ้ง',
+                        size: 'sm',
+                        flex: 2,
+                        wrap: true,
+                      },
+                      {
+                        type: 'text',
+                        text: `${req.body.date}`,
+                        wrap: true,
+                        color: '#666666',
+                        size: 'sm',
+                        flex: 5,
+                      },
+                    ],
+                  },
+                  {
+                    type: 'box',
+                    layout: 'baseline',
+                    spacing: 'sm',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: 'สถานะ',
+                        size: 'sm',
+                        flex: 2,
+                      },
+                      {
+                        type: 'text',
+                        text: 'รับเรื่อง',
+                        wrap: true,
+                        color: '#666666',
+                        size: 'sm',
+                        flex: 5,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'box',
+                layout: 'baseline',
+                spacing: 'none',
+                contents: [
+                  {
+                    type: 'text',
+                    text: 'ข้อความตอบกลับจากเจ้าหน้าที่',
+                    size: 'sm',
+                    wrap: true,
+                    margin: 'none',
+                    offsetTop: 'none',
+                  },
+                ],
+                paddingTop: 'lg',
+              },
+              {
+                type: 'box',
+                layout: 'vertical',
+                contents: [
+                  {
+                    type: 'text',
+                    text: `${req.body.textReply}`,
+                    wrap: true,
+                  },
+                ],
+              },
+            ],
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            spacing: 'sm',
+            contents: [
+              {
+                type: 'box',
+                layout: 'vertical',
+                contents: [],
+                margin: 'sm',
+              },
+            ],
+            flex: 0,
+          },
+        },
+      });
+      res.send('ok');
+    }
+
+    if (req.body.type === 'notInvoled') {
+      console.log('notInvoled');
+      const db = admin.database();
+      const ref = db.ref(`/order/${req.body.id}`);
+      await ref.update({ status: 'notInvoled' });
+      const text = `เรียนคุณ ${req.body.displayName} เนื่องจากปัญหาที่แจ้งเข้ามาเรื่อง ${req.body.title}  เราไม่สามารถดำเนินการแก้ไขให้ได้`;
+      pushMessage(req.body.uid, { type: 'text', text: text });
+      res.send('ok');
+    }
   });
 });
 

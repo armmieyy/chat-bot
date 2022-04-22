@@ -5,9 +5,13 @@ import { db } from '../plugins/firebaseConfig';
 import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { Row, Col } from 'antd';
+import axios from 'axios';
 
 function Report() {
   const [fetchData, setFetchData] = useState([]);
+  const [showData, setShowData] = useState([]);
+  const [status, setStatus] = useState('wait');
+
   const route = useRouter();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -23,26 +27,69 @@ function Report() {
         for (const key in res) {
           arr.push({ ...res[key], id: key });
         }
-        arr = arr.filter(item => item.status === 'wait');
+        
         setFetchData(arr);
       });
     }
   }, [user]);
 
+
   useEffect(() => {
-    if (!fetchData) return;
-  }, [fetchData]);
+    if (!status) return;
+    setShowData(fetchData.filter(item => item.status === status));
+  }, [fetchData, status]);
 
   const signout = () => {
     signOut(auth);
+  };
+
+  const complete = key => {
+    const arr = showData.filter(item => item.id === key);
+    const data = arr[0];
+    axios({
+      method: 'post',
+      url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
+      data: {
+        id: key,
+        uid: data.uid,
+        type: 'complete',
+        image: data.image,
+        title: data.message,
+        date: data.date,
+      },
+    }).then(res => {}).catch(err => {alert(err)});
   };
 
   return (
     <>
       <div>
         <Sidebar signOut={signout} />
-        <h1>luv ink</h1>
+
         <div className="pt-4 px-12 h-screen">
+          <div className="flex justify-end mb-4">
+            <label htmlFor="" className="mr-4 text-lg">
+              สถานะ
+            </label>
+            <select
+              name=""
+              id=""
+              defaultValue={'wait'}
+              className="border border-blue-700 rounded"
+              onChange={e => {
+                setStatus(e.target.value);
+              }}
+            >
+              <option className="text-lg" value="wait">
+                รอการตรวจสอบ
+              </option>
+              <option className="text-lg" value="inProgress">
+                รอผู้ใช้ส่งข้อมูล
+              </option>
+              <option className="text-lg" value="receive">
+                รับเรื่อง
+              </option>
+            </select>
+          </div>
           <table className="border border-blue-700 p-5 w-full h-[560px] table-fixed">
             <thead>
               <tr className="h-12 bg-blue-300">
@@ -50,28 +97,70 @@ function Report() {
                 <th className="border border-blue-700 w-[423px]">เรื่อง</th>
                 <th className="border border-blue-700 w-48 ">ประเภท</th>
                 <th className="border border-blue-700 w-48">สถานะ</th>
+                {status === 'receive' ? (
+                  <th className="border border-blue-700 w-32">Action</th>
+                ) : (
+                  <></>
+                )}
               </tr>
             </thead>
             <tbody className="border border-blue-700">
-              {fetchData &&
-                fetchData.map(item => (
+              {showData &&
+                showData.map(item => (
                   <tr
                     key={item.id}
-                    className="cursor-pointer hover:bg-blue-100 h-8"
-                    onClick={() => {
-                      router.push(`/reply/${item.id}`)
-                    }}
+                    className="cursor-pointer hover:bg-blue-100 h-10"
                   >
-                    <th className="border border-blue-700 w-48">{item.date}</th>
-                    <th className="border border-blue-700 w-[423px]">
+                    <th
+                      className="border border-blue-700 w-48"
+                      onClick={() => {
+                        router.push(`/reply/${item.id}`);
+                      }}
+                    >
+                      {item.date}
+                    </th>
+                    <th
+                      className="border border-blue-700 w-[423px]"
+                      onClick={() => {
+                        router.push(`/reply/${item.id}`);
+                      }}
+                    >
                       {item.message}
                     </th>
-                    <th className="border border-blue-700 w-48 ">
+                    <th
+                      className="border border-blue-700 w-48 "
+                      onClick={() => {
+                        router.push(`/reply/${item.id}`);
+                      }}
+                    >
                       {item.kind}
                     </th>
-                    <th className="border border-blue-700 w-48">
-                      {item.status}
+                    <th
+                      className="border border-blue-700 w-48"
+                      onClick={() => {
+                        router.push(`/reply/${item.id}`);
+                      }}
+                    >
+                      {item.status === 'wait' && 'รอการตรวจสอบ'}
+                      {item.status === 'inProgress' && 'รอผู้ใช้ส่งข้อมูล'}
+                      {item.status === 'receive' && 'รับเรื่อง'}
                     </th>
+
+                    {status === 'receive' ? (
+                      <th className="border border-blue-700 w-32">
+                        <button
+                          style={{ backgroundColor: 'rgb(15, 254, 0)' }}
+                          className="w-1/2 hover:opacity-50 rounded p-1"
+                          onClick={() => {
+                            complete(item.id);
+                          }}
+                        >
+                          เสร็จสิ้น
+                        </button>
+                      </th>
+                    ) : (
+                      <></>
+                    )}
                   </tr>
                 ))}
             </tbody>
