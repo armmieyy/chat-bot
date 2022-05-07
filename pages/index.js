@@ -9,7 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import React, { useEffect, useState } from 'react';
-
+import { onValue, ref } from 'firebase/database';
+import { db } from '../plugins/firebaseConfig';
 library.add(fas);
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
@@ -25,22 +26,29 @@ import {
   Form,
   notification,
 } from 'antd';
+import { async } from '@firebase/util';
 
 const { Text, Title } = Typography;
 
 const { TextArea } = Input;
 
-function Login() {
+function Login({ setRole, setDistrict }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const route = useRouter();
   const singIn = async (email, password) => {
     const auth = getAuth();
     await signInWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
+      .then(async userCredential => {
         let user = userCredential.user;
-        console.log(user);
-        route.push('/dashboard');
+        console.log(user.uid);
+        await onValue(ref(db, `/permission/${user.uid}`), snapshot => {
+          const res = snapshot.val();
+          setRole(res.role);
+          setDistrict(res.district)
+          console.log(res);
+        });
+        await route.push('/dashboard');
       })
       .catch(error => {
         const errorCode = error.code;

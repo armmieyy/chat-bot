@@ -8,10 +8,12 @@ import { Col, Row } from 'antd';
 import axios from 'axios';
 import { async } from '@firebase/util';
 
-function Reply() {
+function Reply({ role, setRole }) {
   const router = useRouter();
   const [fetchData, setFetchData] = useState([]);
   const [textReply, setTextReply] = useState('');
+  const [district, setDistrict] = useState([]);
+  const [zone_control, setzone_control] = useState('');
   const { slug } = router.query;
   const auth = getAuth();
   const user = auth.currentUser;
@@ -24,16 +26,31 @@ function Reply() {
     if (user === null) {
       router.push('/index');
     }
+
+    onValue(ref(db, `/permission/${user.uid}`), snapshot => {
+      const res = snapshot.val();
+      setRole(res.role);
+    });
+
+    onValue(ref(db, `/district`), snapshot => {
+      const res = snapshot.val();
+      setDistrict(res);
+    });
   }, [user]);
 
   useEffect(() => {
     if (!slug) return;
-
     onValue(ref(db, `/order/${slug}`), snapshot => {
       const res = snapshot.val();
       setFetchData(res);
     });
+    console.log(user);
   }, [slug]);
+
+  useEffect(() => {
+    if (!fetch) return;
+    setzone_control(fetchData.zone_control);
+  }, [fetchData]);
 
   const sendReply = async () => {
     console.log(textReply);
@@ -55,6 +72,24 @@ function Reply() {
         if (res.status === 200) {
           router.push('/report');
         }
+      })
+      .catch(err => {
+        alert(err);
+      });
+  };
+
+  const save = async (zone, id) => {
+    axios({
+      method: 'post',
+      url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
+      data: {
+        id: id,
+        type: 'zone_control',
+        zone_control: zone,
+      },
+    })
+      .then(res => {
+        router.push('/management?status=1');
       })
       .catch(err => {
         alert(err);
@@ -86,8 +121,7 @@ function Reply() {
 
   return (
     <>
-      <Navbar signOut={signout} />
-
+      <Navbar signOut={signout} role={role} />
       <div className="pt-4 px-12">
         <Row className="border p-9 rounded-lg shadow-lg">
           <Col span={24}>
@@ -111,6 +145,36 @@ function Reply() {
               </Col>
               <Col span={15} className="border-b mr-3">
                 <span className="text-2xl ">{fetchData.date}</span>
+              </Col>
+              <Col span={6} className="mr-3">
+                <label className="text-2xl ">พื้นที่รับผิดชอบ</label>
+                <select
+                  name=""
+                  id=""
+                  className="ml-2 w-1/3 p-1 text-xl border rounded "
+                  value={zone_control}
+                  disabled={
+                    role == 2 ||
+                    fetchData.status === 'complete' ||
+                    fetchData === 'notInvoled'
+                      ? true
+                      : false
+                  }
+                  onChange={e => {
+                    setzone_control(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                >
+                  <option key={0} value={0}>
+                    -
+                  </option>
+                  {district &&
+                    district.map((item, key) => (
+                      <option key={item} value={key}>
+                        {item}
+                      </option>
+                    ))}
+                </select>
               </Col>
             </Row>
             <Row className="mt-4">
@@ -170,15 +234,35 @@ function Reply() {
                       value={textReply}
                       rows="8"
                       className="w-full border p-5 text-xl"
+                      disabled={
+                        fetchData.status === 'complete' ||
+                        fetchData === 'notInvoled'
+                      }
                       onChange={e => setTextReply(e.target.value)}
                     ></textarea>
                   </Col>
                 </Row>
                 <Row className="mt-2 space-x-4">
                   <button
+                    className="p-2 px-6 bg-green-500 text-md border border-green-700 hover:bg-green-700 
+                  rounded-lg text-white"
+                    onClick={() => save(zone_control, slug)}
+                    hidden={role != 1}
+                    disabled={
+                      fetchData.status === 'complete' ||
+                      fetchData === 'notInvoled'
+                    }
+                  >
+                    บันทึก
+                  </button>
+                  <button
                     className="p-2 bg-blue-500 text-md border border-blue-700 hover:bg-blue-700 
                   rounded-lg text-white"
                     onClick={() => sendReply(textReply)}
+                    disabled={
+                      fetchData.status === 'complete' ||
+                      fetchData === 'notInvoled'
+                    }
                   >
                     ส่งข้อความ
                   </button>
@@ -188,6 +272,10 @@ function Reply() {
                     onClick={() => {
                       notInvoled();
                     }}
+                    disabled={
+                      fetchData.status === 'complete' ||
+                      fetchData === 'notInvoled'
+                    }
                   >
                     ไม่เกี่ยวข้อง
                   </button>

@@ -7,9 +7,8 @@ import { useRouter } from 'next/router';
 import { Row, Col } from 'antd';
 import axios from 'axios';
 import Link from 'next/link';
-import { set } from 'nprogress';
 
-function Report({ role, district, setRole, setDistrict }) {
+function Management({ role, district }) {
   const optKind = [
     'ทั้งหมด',
     'ประปา',
@@ -26,7 +25,7 @@ function Report({ role, district, setRole, setDistrict }) {
   const [fetchData, setFetchData] = useState([]);
   const [fillterData, setFillterData] = useState([]);
   const [showData, setShowdata] = useState([]);
-  const [status, setStatus] = useState('active_zone');
+  const [status, setStatus] = useState('wait');
   const [row, setRow] = useState(10);
   const [kind, setKind] = useState();
   const [currentpage, setCurrentpage] = useState(1);
@@ -36,34 +35,33 @@ function Report({ role, district, setRole, setDistrict }) {
   const user = auth.currentUser;
   const router = useRouter();
 
+  const query = route.query;
+
   useEffect(() => {
     if (user === null) {
       route.push('/index');
     } else {
-      onValue(ref(db, `/permission/${user.uid}`), snapshot => {
+      onValue(ref(db, '/order'), snapshot => {
         const res = snapshot.val();
-        setRole(res.role);
-        setDistrict(res.district);
+        let arr = [];
+        for (const key in res) {
+          arr.push({ ...res[key], id: key });
+        }
+
+        arr = arr.filter(item => item.status !== 'complete');
+
+        setFetchData(arr);
       });
     }
   }, [user]);
 
   useEffect(() => {
-    onValue(ref(db, '/order'), snapshot => {
-      const res = snapshot.val();
-      let arr = [];
-      for (const key in res) {
-        arr.push({ ...res[key], id: key });
-      }
-      console.log(district);
-      if (role == 1) {
-        arr = arr.filter(item => item.status !== 'complete');
-      } else {
-        arr = arr.filter(item => item.zone_control == district);
-      }
-      setFetchData(arr);
-    });
-  }, [district, role]);
+    if (!query?.status) return;
+
+    if (query.status == 1) {
+      setStatus('active_zone');
+    }
+  }, [query]);
 
   useEffect(() => {
     if (!status) return;
@@ -176,18 +174,17 @@ function Report({ role, district, setRole, setDistrict }) {
               <select
                 name=""
                 id="status"
-                defaultValue={'wait'}
+                value={status}
                 className="border border-blue-700 rounded"
                 onChange={e => {
                   setStatus(e.target.value);
                 }}
               >
                 <option className="text-lg" value="wait">
-                  รอการตรวจสอบ
+                  รอลงเขตรับผิดชอบ
                 </option>
-
-                <option className="text-lg" value="receive">
-                  รับเรื่อง
+                <option className="text-lg" value="active_zone">
+                  ลงเขตรับผิดชอบแล้ว
                 </option>
               </select>
             </div>
@@ -209,12 +206,19 @@ function Report({ role, district, setRole, setDistrict }) {
                     <th className="border-b border-r border-blue-700 w-[423px]">
                       รายละเอียด
                     </th>
-                    <th className="border-b border-r border-blue-700 w-28">
+                    <th className="border-b border-r border-blue-700 w-32">
                       จาก
                     </th>
-                    <th className="border-b border-r border-blue-700 w-48 ">
+                    <th className="border-b border-r border-blue-700 w-28">
                       ประเภท
                     </th>
+                    {status == 'active_zone' || status == 'receive' ? (
+                      <th className="border-b border-r border-blue-700 w-48 ">
+                        พื้นที่รับผิดชอบ
+                      </th>
+                    ) : (
+                      <></>
+                    )}
                     <th className="border-b border-l border-blue-700 w-48">
                       สถานะ
                     </th>
@@ -235,7 +239,7 @@ function Report({ role, district, setRole, setDistrict }) {
                         className="cursor-pointer hover:bg-blue-100 h-10 border border-blue-700"
                       >
                         <Link href={`/reply/${item.id}`}>
-                          <th className="border-b border-r border-blue-700 w-16">
+                          <th className="border-b border-r border-blue-700 w-48">
                             {currentpage === 1 && index + 1}
                             {currentpage > 1 &&
                               index + 1 + currentpage * 10 - 10}
@@ -256,7 +260,7 @@ function Report({ role, district, setRole, setDistrict }) {
                           {item.message}
                         </th>
                         <th
-                          className="border-b border-r border-blue-700 w-28"
+                          className="border-b border-r border-blue-700 w-32"
                           onClick={() => {
                             router.push(`/reply/${item.id}`);
                           }}
@@ -271,14 +275,30 @@ function Report({ role, district, setRole, setDistrict }) {
                         >
                           {item.kind}
                         </th>
+                        {status === 'active_zone' || status === 'receive' ? (
+                          <th
+                            className="border-b border-r border-blue-700 w-48 "
+                            onClick={() => {
+                              router.push(`/reply/${item.id}`);
+                            }}
+                          >
+                            {item.zone_control == 1 && <>ศรีวิชัย</>}
+                            {item.zone_control == 2 && <>นครพิงค์</>}
+                            {item.zone_control == 3 && <>เม็งราย</>}
+                            {item.zone_control == 4 && <>กาวิละ</>}
+                          </th>
+                        ) : (
+                          <></>
+                        )}
                         <th
                           className="border-b border-r border-blue-700 w-48"
                           onClick={() => {
                             router.push(`/reply/${item.id}`);
                           }}
                         >
-                          {item.status === 'active_zone' && 'รอการตรวจสอบ'}
-                          {item.status === 'inProgress' && 'รอผู้ใช้ส่งข้อมูล'}
+                          {item.status === 'wait' && 'รอลงเขตรับผิดชอบ'}
+                          {item.status === 'active_zone' &&
+                            'ลงเขตรับผิดชอบแล้ว'}
                           {item.status === 'receive' && 'รับเรื่อง'}
                         </th>
 
@@ -332,4 +352,4 @@ function Report({ role, district, setRole, setDistrict }) {
   );
 }
 
-export default Report;
+export default Management;

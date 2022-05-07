@@ -4,12 +4,31 @@ import { onValue, ref } from 'firebase/database';
 import { db } from '../plugins/firebaseConfig';
 import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
+import { Row, Col } from 'antd';
+import Link from 'next/link';
 
-function Home({}) {
+function Home({ role }) {
+  const optKind = [
+    'ทั้งหมด',
+    'ประปา',
+    'อื่นๆ',
+    'ถนน',
+    'ต้นไม้',
+    'ความสะอาด',
+    'ไฟฟ้า',
+    'ทางเท้า',
+    'จราจร จอดรถ',
+    'กลิ่น',
+    'เสียง',
+  ];
   const [fetchData, setFetchData] = useState([]);
-  const [showData, setShowData] = useState([]);
+  const [fillterData, setFillterData] = useState([]);
+  const [showData, setShowdata] = useState([]);
   const [status, setStatus] = useState('complete');
-
+  const [row, setRow] = useState(10);
+  const [kind, setKind] = useState();
+  const [currentpage, setCurrentpage] = useState(1);
+  const [totalpage, setTotalpage] = useState();
   const route = useRouter();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -25,9 +44,11 @@ function Home({}) {
         for (const key in res) {
           arr.push({ ...res[key], id: key });
         }
+
         arr = arr.filter(
           item => item.status === 'complete' || item.status === 'notInvoled',
         );
+
         setFetchData(arr);
       });
     }
@@ -35,10 +56,40 @@ function Home({}) {
 
   useEffect(() => {
     if (!status) return;
+    setFillterData(fetchData.filter(item => item.status === status));
+    if (!kind) return;
+    setFillterData(
+      fetchData.filter(item => item.kind === kind && item.status === status),
+    );
 
-    console.log(status);
-    setShowData(fetchData.filter(item => item.status == status));
-  }, [fetchData, status]);
+    if (kind === 'ทั้งหมด') {
+      setFillterData(fetchData.filter(item => item.status === status));
+    }
+  }, [fetchData, status, kind]);
+
+  useEffect(() => {
+    if (!fillterData) return;
+    setTotalpage(Math.ceil(fillterData.length / 10));
+
+    if (currentpage === 1) {
+      setShowdata(fillterData.slice(currentpage - 1, 10));
+    } else {
+      setShowdata(fillterData.slice(currentpage * 10 - 10, currentpage * 10));
+    }
+  }, [fillterData, currentpage]);
+
+  const reset = () => {
+    setStatus('complete');
+    setKind('ทั้งหมด');
+    setFillterData(fetchData.filter(item => item.status === status));
+  };
+
+  const nextpage = () => {
+    if (currentpage < totalpage) setCurrentpage(currentpage + 1);
+  };
+  const prevpage = () => {
+    if (currentpage > 1) setCurrentpage(currentpage - 1);
+  };
 
   const signout = () => {
     signOut(auth);
@@ -47,73 +98,222 @@ function Home({}) {
   return (
     <>
       <div>
-        <Sidebar signOut={signout} />
-        <h1>luv ink</h1>
+        <Sidebar signOut={signout} role={role} />
 
-        <div className="pt-4 px-12 h-screen">
+        <div className="pt-4 px-12">
           <div className="flex justify-end mb-4">
-            <label htmlFor="" className="mr-4 text-lg">
-              สถานะ
-            </label>
-            <select
-              name=""
-              id=""
-              defaultValue={'wait'}
-              className="border border-blue-700 rounded"
-              onChange={e => {
-                setStatus(e.target.value);
-              }}
-            >
-              <option className="text-lg" value="complete">
-                ดำเนินการสำเร็จ
-              </option>
-              <option className="text-lg" value="notInvoled">
-                ไม่เกี่ยวข้อง
-              </option>
-            </select>
-          </div>
-          <table className="border border-blue-700 p-5 w-full h-[560px] table-fixed">
-            <thead>
-              <tr className="h-12 bg-blue-300">
-                <th className="border border-blue-700 w-48">วัน เวลา</th>
-                <th className="border border-blue-700 w-[423px]">เรื่อง</th>
-                <th className="border border-blue-700 w-48 ">ประเภท</th>
-                <th className="border border-blue-700 w-48">สถานะ</th>
-                {status === 'receive' ? (
-                  <th className="border border-blue-700 w-32">Action</th>
-                ) : (
-                  <></>
-                )}
-              </tr>
-            </thead>
-            <tbody className="border border-blue-700">
-              {showData &&
-                showData.map(item => (
-                  <tr
-                    key={item.id}
-                    className="cursor-pointer hover:bg-blue-100 h-10"
-                  >
-                    <th className="border border-blue-700 w-48">{item.date}</th>
-                    <th className="border border-blue-700 w-[423px]">
-                      {item.message}
-                    </th>
-                    <th className="border border-blue-700 w-48 ">
-                      {item.kind}
-                    </th>
-                    <th className="border border-blue-700 w-48">
-                      {item.status === 'complete' && (
-                        <span style={{ color: 'rgb(15, 176, 0)' }}>
-                          ดำเนินการสำเร็จ
-                        </span>
-                      )}
-                      {item.status === 'notInvoled' && (
-                        <span className="text-red-600">ไม่เกี่ยวข้อง</span>
-                      )}
-                    </th>
-                  </tr>
+            <div className="mr-4">
+              <button
+                className="h-full w-full p-1 rounded text-white bg-blue-600"
+                onClick={() => reset()}
+              >
+                รีเซ็ต
+              </button>
+            </div>
+            <div className="mr-4">
+              <label htmlFor="" className="mr-4 text-lg">
+                ประเภท
+              </label>
+              <select
+                name=""
+                id="kind"
+                value={kind}
+                className="border border-blue-700 rounded"
+                onChange={e => {
+                  if (e.target.value === 'ทั้งหมด') {
+                    setFillterData(
+                      fetchData.filter(item => item.status === status),
+                    );
+                    setKind(e.target.value);
+                  } else {
+                    setKind(e.target.value);
+                  }
+                }}
+              >
+                {optKind.map((e, i) => (
+                  <option key={i} value={e}>
+                    {e}
+                  </option>
                 ))}
-            </tbody>
-          </table>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="" className="mr-4 text-lg">
+                สถานะ
+              </label>
+              <select
+                name=""
+                id="status"
+                defaultValue={'wait'}
+                className="border border-blue-700 rounded"
+                onChange={e => {
+                  setStatus(e.target.value);
+                }}
+              >
+                <option className="text-lg" value="complete">
+                  ดำเนินการเสร็จสิ้น
+                </option>
+                <option className="text-lg" value="notInvoled">
+                  ไม่เกี่ยวข้อง
+                </option>
+              </select>
+            </div>
+          </div>
+          <Row
+            style={{ height: '450px' }}
+            className=" w-full border  bg-gray-100"
+          >
+            <Col span={24}>
+              <table className="  p-5 w-full  table-fixed">
+                <thead className="w-full">
+                  <tr className="h-12 bg-blue-300 border-blue-700 border">
+                    <th className="border-b border border-blue-700 w-16">
+                      ลำดับ
+                    </th>
+                    <th className="border-b border-r  border-blue-700 w-48">
+                      วัน เวลา
+                    </th>
+                    <th className="border-b border-r border-blue-700 w-[423px]">
+                      รายละเอียด
+                    </th>
+                    <th className="border-b border-r border-blue-700 w-32">
+                      จาก
+                    </th>
+                    <th className="border-b border-r border-blue-700 w-28">
+                      ประเภท
+                    </th>
+                    {role === 1  ? (
+                      <th className="border-b border-r border-blue-700 w-48 ">
+                        พื้นที่รับผิดชอบ
+                      </th>
+                    ) : (
+                      <></>
+                    )}
+                    <th className="border-b border-l border-blue-700 w-48">
+                      สถานะ
+                    </th>
+                   
+                  </tr>
+                </thead>
+                <tbody className="">
+                  {showData &&
+                    showData.map((item, index) => (
+                      <tr
+                        key={item.id}
+                        className="cursor-pointer hover:bg-blue-100 h-10 border border-blue-700"
+                      >
+                        <Link href={`/reply/${item.id}`}>
+                          <th className="border-b border-r border-blue-700 w-48">
+                            {currentpage === 1 && index + 1}
+                            {currentpage > 1 &&
+                              index + 1 + currentpage * 10 - 10}
+                          </th>
+                        </Link>
+                        <Link href={`/reply/${item.id}`}>
+                          <th className="border-b border-r border-blue-700 w-48">
+                            {item.date}
+                          </th>
+                        </Link>
+
+                        <th
+                          className="border-b border-r border-blue-700 w-[423px]"
+                          onClick={() => {
+                            router.push(`/reply/${item.id}`);
+                          }}
+                        >
+                          {item.message}
+                        </th>
+                        <th
+                          className="border-b border-r border-blue-700 w-32"
+                          onClick={() => {
+                            router.push(`/reply/${item.id}`);
+                          }}
+                        >
+                          {item.displayName}
+                        </th>
+                        <th
+                          className="border-b border-r border-blue-700 w-48 "
+                          onClick={() => {
+                            router.push(`/reply/${item.id}`);
+                          }}
+                        >
+                          {item.kind}
+                        </th>
+                        {role === 1 ? (
+                          <th
+                            className="border-b border-r border-blue-700 w-48 "
+                            onClick={() => {
+                              router.push(`/reply/${item.id}`);
+                            }}
+                          >
+                            {item.zone_control == 1 && <>ศรีวิชัย</>}
+                            {item.zone_control == 2 && <>นครพิงค์</>}
+                            {item.zone_control == 3 && <>เม็งราย</>}
+                            {item.zone_control == 4 && <>กาวิละ</>}
+                          </th>
+                        ) : (
+                          <></>
+                        )}
+                        <th
+                          className="border-b border-r border-blue-700 w-48"
+                          onClick={() => {
+                            router.push(`/reply/${item.id}`);
+                          }}
+                        >
+                          {item.status === 'complete' && (
+                            <span style={{ color: 'rgb(15, 176, 0)' }}>
+                              ดำเนินการเสร็จสิ้น
+                            </span>
+                          )}
+                          {item.status === 'notInvoled' && (
+                            <span className="text-red-500">ไม่เกี่ยวข้อง</span>
+                          )}
+                        </th>
+
+                        {status === 'receive' ? (
+                          <th className="border-b border-l border-blue-700 w-32">
+                            <button
+                              style={{ backgroundColor: 'rgb(15, 254, 0)' }}
+                              className="w-1/2 hover:opacity-50 rounded p-1"
+                              onClick={() => {
+                                complete(item.id);
+                              }}
+                            >
+                              เสร็จสิ้น
+                            </button>
+                          </th>
+                        ) : (
+                          <></>
+                        )}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </Col>
+          </Row>
+          <Row justify="center" className="mt-3">
+            <div className="flex space-x-3 items-center">
+              <button
+                className="bg-blue-300 p-1 rounded "
+                onClick={() => {
+                  prevpage();
+                }}
+              >
+                กลับ
+              </button>
+              <span className="text-xl">
+                {currentpage} / {totalpage}
+              </span>
+              <button
+                className="bg-blue-300 p-1 rounded"
+                onClick={() => {
+                  nextpage(1, currentpage);
+                }}
+              >
+                ต่อไป
+              </button>
+            </div>
+          </Row>
         </div>
       </div>
     </>
