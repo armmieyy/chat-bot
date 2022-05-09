@@ -16,7 +16,7 @@ const LINE_HEADER = {
   Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
 };
 
-const NGROKURL = 'https://6097-2001-fb1-102-6099-9826-f639-f116-27be.ngrok.io';
+const NGROKURL = 'https://49e5-2001-fb1-101-f777-cd05-3c5f-b409-a2f7.ngrok.io';
 const GIVERATE = NGROKURL + '/chatbot-49334/us-central1/giveRate?rate=';
 
 const reply = (replyToken, payload) => {
@@ -50,8 +50,11 @@ exports.giveRate = functions.https.onRequest(async (req, res) => {
     db.ref('/rate/score').transaction(current_value => {
       return (current_value || 0) + parseInt(req.query.rate);
     });
+    db.ref(`/rate/${req.query.rate}`).transaction(current_value => {
+      return (current_value || 0) + 1;
+    });
     console.log(req.body);
-    res.send("ขอบคุณ");
+    res.redirect('http://localhost:3000/thankyou');
   });
 });
 
@@ -383,12 +386,12 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
     }
 
     if (req.body.type === 'notInvoled') {
-      console.log('notInvoled');
+      console.log(req.body);
       const db = admin.database();
       const ref = db.ref(`/order/${req.body.id}`);
       await ref.update({ status: 'notInvoled' });
       const text = `เรียนคุณ ${req.body.displayName} เนื่องจากปัญหาที่แจ้งเข้ามาเรื่อง ${req.body.title}  เราไม่สามารถดำเนินการแก้ไขให้ได้`;
-      pushMessage(req.body.uid, { type: 'text', text: text });
+      pushMessage(req.body.uid, [{ type: 'text', text: text }]);
       res.send('ok');
     }
   });

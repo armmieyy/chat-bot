@@ -222,65 +222,72 @@ function Reply({ role, setRole }) {
                   className="w-1/2 h-auto"
                 />
               </Col>
-              <Col span={12}>
-                <Row className="mt-4">
-                  <Col span={24}>
-                    <span className="text-2xl">ตอบกลับ</span>
+              {fetchData.status == 'complete' ||
+              fetchData.status == 'notInvoled' ? (
+                <></>
+              ) : (
+                <>
+                  <Col span={12}>
+                    <Row className="mt-4">
+                      <Col span={24}>
+                        <span className="text-2xl">ตอบกลับ</span>
+                      </Col>
+                    </Row>
+                    <Row className="mt-4">
+                      <Col span={24}>
+                        <textarea
+                          value={textReply}
+                          rows="8"
+                          className="w-full border p-5 text-xl"
+                          disabled={
+                            fetchData.status === 'complete' ||
+                            fetchData === 'notInvoled'
+                          }
+                          onChange={e => setTextReply(e.target.value)}
+                        ></textarea>
+                      </Col>
+                    </Row>
+                    <Row className="mt-2 space-x-4">
+                      <button
+                        className="p-2 px-6 bg-green-500 text-md border border-green-700 hover:bg-green-700 
+              rounded-lg text-white"
+                        onClick={() => save(zone_control, slug)}
+                        hidden={role != 1}
+                        disabled={
+                          fetchData.status === 'complete' ||
+                          fetchData === 'notInvoled'
+                        }
+                      >
+                        บันทึก
+                      </button>
+                      <button
+                        className="p-2 bg-blue-500 text-md border border-blue-700 hover:bg-blue-700 
+              rounded-lg text-white"
+                        onClick={() => sendReply(textReply)}
+                        disabled={
+                          fetchData.status === 'complete' ||
+                          fetchData === 'notInvoled'
+                        }
+                      >
+                        ส่งข้อความ
+                      </button>
+                      <button
+                        className="p-2 bg-red-500 text-md border border-red-700 hover:bg-red-700 
+              rounded-lg text-white"
+                        onClick={() => {
+                          notInvoled();
+                        }}
+                        disabled={
+                          fetchData.status === 'complete' ||
+                          fetchData === 'notInvoled'
+                        }
+                      >
+                        ไม่เกี่ยวข้อง
+                      </button>
+                    </Row>
                   </Col>
-                </Row>
-                <Row className="mt-4">
-                  <Col span={24}>
-                    <textarea
-                      value={textReply}
-                      rows="8"
-                      className="w-full border p-5 text-xl"
-                      disabled={
-                        fetchData.status === 'complete' ||
-                        fetchData === 'notInvoled'
-                      }
-                      onChange={e => setTextReply(e.target.value)}
-                    ></textarea>
-                  </Col>
-                </Row>
-                <Row className="mt-2 space-x-4">
-                  <button
-                    className="p-2 px-6 bg-green-500 text-md border border-green-700 hover:bg-green-700 
-                  rounded-lg text-white"
-                    onClick={() => save(zone_control, slug)}
-                    hidden={role != 1}
-                    disabled={
-                      fetchData.status === 'complete' ||
-                      fetchData === 'notInvoled'
-                    }
-                  >
-                    บันทึก
-                  </button>
-                  <button
-                    className="p-2 bg-blue-500 text-md border border-blue-700 hover:bg-blue-700 
-                  rounded-lg text-white"
-                    onClick={() => sendReply(textReply)}
-                    disabled={
-                      fetchData.status === 'complete' ||
-                      fetchData === 'notInvoled'
-                    }
-                  >
-                    ส่งข้อความ
-                  </button>
-                  <button
-                    className="p-2 bg-red-500 text-md border border-red-700 hover:bg-red-700 
-                  rounded-lg text-white"
-                    onClick={() => {
-                      notInvoled();
-                    }}
-                    disabled={
-                      fetchData.status === 'complete' ||
-                      fetchData === 'notInvoled'
-                    }
-                  >
-                    ไม่เกี่ยวข้อง
-                  </button>
-                </Row>
-              </Col>
+                </>
+              )}
             </Row>
           </Col>
         </Row>

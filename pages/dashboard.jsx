@@ -8,6 +8,7 @@ import { Row, Col } from 'antd';
 import StatChart from '../components/chart/StatChart';
 import StatKindChart from '../components/chart/kindStat';
 import StatZoneChart from '../components/chart/zoneStat';
+import RatingBar from '../components/chart/RatingBar';
 
 function Dashboard({ role, district, setDistrict, setRole }) {
   const [stat, setStat] = useState({});
@@ -15,6 +16,7 @@ function Dashboard({ role, district, setDistrict, setRole }) {
   const [zoneStat, setZoneStat] = useState({});
   const [fetchData, setFetchData] = useState([]);
   const [waitReply, setWaitReply] = useState([]);
+  const [rating, setRating] = useState();
   const route = useRouter();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -27,6 +29,10 @@ function Dashboard({ role, district, setDistrict, setRole }) {
         const res = snapshot.val();
         setRole(res.role);
         setDistrict(res.district);
+      });
+      onValue(ref(db, '/rate'), snapshot => {
+        const res = snapshot.val();
+        setRating(res);
       });
     }
   }, [user]);
@@ -152,9 +158,7 @@ function Dashboard({ role, district, setDistrict, setRole }) {
               />
             </Row>
           </Col>
-          <Col span={8}>
-            <StatChart data={stat} />
-          </Col>
+          <Col span={8}>{stat && <StatChart data={stat} />}</Col>
         </Row>
       </div>
       <Row className="mt-4 ">
@@ -227,6 +231,27 @@ function Dashboard({ role, district, setDistrict, setRole }) {
             <Col span={8}>
               <StatZoneChart data={zoneStat} />
             </Col>
+          </Row>
+          <Row className="mt-4 ">
+            <Col span={24} className="bg-blue-500 p-4">
+              <span className="text-xl text-white">คะแนนความพึงพอใจ</span>
+            </Col>
+          </Row>
+          <Row className="mb-10">
+            <Col span={6}></Col>
+            <Col span={4} className="pt-36 mb-5  px-12">
+              <span className="text-4xl">
+                {rating && (rating.score / rating.n).toFixed(1)} <br />
+              </span>
+              <span className="text-2xl text-gray-500"> จาก 5 คะแนน</span>
+              <br />
+              <span className="text-2xl text-right">
+                จำนวนครั้ง {rating && rating.n}
+              </span>
+            </Col>
+            <div className="flex mr-8 w-1/2">
+              {rating && <RatingBar data={rating} />}
+            </div>
           </Row>
         </>
       ) : (

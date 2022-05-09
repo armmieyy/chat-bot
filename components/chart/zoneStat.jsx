@@ -11,6 +11,7 @@ const StatZoneChart = ({ data }) => {
         labels: ['ศรีวิชัย', 'นครพิงค์', 'เม็งราย', 'กาวิละ'],
         datasets: [
           {
+            axis: 'y',
             data: arrData,
             backgroundColor: [
               '#22C55E',
