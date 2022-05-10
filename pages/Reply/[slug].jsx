@@ -6,7 +6,6 @@ import { db } from '../../plugins/firebaseConfig';
 import { getAuth, signOut } from 'firebase/auth';
 import { Col, Row } from 'antd';
 import axios from 'axios';
-import { async } from '@firebase/util';
 
 function Reply({ role, setRole }) {
   const router = useRouter();
@@ -17,8 +16,10 @@ function Reply({ role, setRole }) {
   const { slug } = router.query;
   const auth = getAuth();
   const user = auth.currentUser;
+  const route = useRouter();
   const signout = () => {
     signOut(auth);
+    route.push('/index');
   };
 
   useEffect(() => {
@@ -44,7 +45,6 @@ function Reply({ role, setRole }) {
       const res = snapshot.val();
       setFetchData(res);
     });
-    console.log(user);
   }, [slug]);
 
   useEffect(() => {
@@ -53,7 +53,6 @@ function Reply({ role, setRole }) {
   }, [fetchData]);
 
   const sendReply = async () => {
-    console.log(textReply);
     await axios({
       method: 'post',
       url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
@@ -162,7 +161,6 @@ function Reply({ role, setRole }) {
                   }
                   onChange={e => {
                     setzone_control(e.target.value);
-                    console.log(e.target.value);
                   }}
                 >
                   <option key={0} value={0}>

@@ -41,12 +41,10 @@ function Login({ setRole, setDistrict }) {
     await signInWithEmailAndPassword(auth, email, password)
       .then(async userCredential => {
         let user = userCredential.user;
-        console.log(user.uid);
         await onValue(ref(db, `/permission/${user.uid}`), snapshot => {
           const res = snapshot.val();
           setRole(res.role);
-          setDistrict(res.district)
-          console.log(res);
+          setDistrict(res.district);
         });
         await route.push('/dashboard');
       })
@@ -65,7 +63,7 @@ function Login({ setRole, setDistrict }) {
           </center>
         </div>
         <Form
-          class="px-8 pt-2 pb-8 mb-4 pd-12"
+          className="px-8 pt-2 pb-8 mb-4 pd-12"
           name="basic"
           layout="vertical"
           requiredMark={true}
@@ -89,7 +87,7 @@ function Login({ setRole, setDistrict }) {
           >
             <Input
               className=""
-              id="#"
+              id="email"
               type="text"
               size="large"
               placeholder="Email"
@@ -107,7 +105,7 @@ function Login({ setRole, setDistrict }) {
           >
             <Input.Password
               className=""
-              id="#"
+              id="password"
               type="password"
               size="large"
               placeholder="Password"
@@ -131,9 +129,9 @@ function Login({ setRole, setDistrict }) {
               className="bg-white text-blue-500 font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline w-full mb-3"
               onClick={() => singIn(email, password)}
             >
-              <div class="text-blue-600 font-bold">LOGIN</div>
+              <div className="text-blue-600 font-bold">LOGIN</div>
             </Button>
-            <div class="pt-4">
+            <div className="pt-4">
               <a
                 href="/forget_password"
                 className="text-white hover:text-gray-800 pl-72 pt-6"

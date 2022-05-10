@@ -102,6 +102,7 @@ function Management({ role, district }) {
 
   const signout = () => {
     signOut(auth);
+    route.push('/index')
   };
 
   const complete = key => {

@@ -46,7 +46,7 @@ function Dashboard({ role, district, setDistrict, setRole }) {
       for (const key in res) {
         arr.push({ ...res[key], id: key });
       }
-      console.log(district);
+      
       if (district != 0) {
         arr = arr.filter(item => item.zone_control == district);
       }
@@ -108,6 +108,7 @@ function Dashboard({ role, district, setDistrict, setRole }) {
 
   const signout = () => {
     signOut(auth);
+    route.push('/index');
   };
 
   const Card = ({ label, value }) => {

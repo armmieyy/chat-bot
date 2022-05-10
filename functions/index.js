@@ -16,7 +16,7 @@ const LINE_HEADER = {
   Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
 };
 
-const NGROKURL = 'https://49e5-2001-fb1-101-f777-cd05-3c5f-b409-a2f7.ngrok.io';
+const NGROKURL = 'https://c551-2001-fb1-101-f777-29b3-4174-7d3b-f84.ngrok.io';
 const GIVERATE = NGROKURL + '/chatbot-49334/us-central1/giveRate?rate=';
 
 const reply = (replyToken, payload) => {

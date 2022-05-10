@@ -35,13 +35,13 @@ function Navbar({ signOut, role }) {
                 Dashboard
               </a>
             </Link>
-            <li className="" onClick={signOut}>
+            <span className="" onClick={signOut}>
               <Link href={'#'} passHref>
                 <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-red-600 hover:text-white">
                   LogOut
                 </a>
               </Link>
-            </li>
+            </span>
           </div>
         </div>
       </nav>

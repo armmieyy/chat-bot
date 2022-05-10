@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { Row, Col } from 'antd';
 import Link from 'next/link';
 
-function Home({ role }) {
+function Home({ role, district, setDistrict, setRole }) {
   const optKind = [
     'ทั้งหมด',
     'ประปา',
@@ -38,21 +38,32 @@ function Home({ role }) {
     if (user === null) {
       route.push('/index');
     } else {
-      onValue(ref(db, '/order'), snapshot => {
+      onValue(ref(db, `/permission/${user.uid}`), snapshot => {
         const res = snapshot.val();
-        let arr = [];
-        for (const key in res) {
-          arr.push({ ...res[key], id: key });
-        }
-
-        arr = arr.filter(
-          item => item.status === 'complete' || item.status === 'notInvoled',
-        );
-
-        setFetchData(arr);
+        setRole(res.role);
+        setDistrict(res.district);
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!role) return;
+    onValue(ref(db, '/order'), snapshot => {
+      const res = snapshot.val();
+      let arr = [];
+      for (const key in res) {
+        arr.push({ ...res[key], id: key });
+      }
+      arr = arr.filter(
+        item => item.status === 'complete' || item.status === 'notInvoled',
+      );
+      if (role == 1) {
+        setFetchData(arr);
+      } else {
+        setFetchData(arr.filter(item => item.zone_control == district));
+      }
+    });
+  }, [district, role]);
 
   useEffect(() => {
     if (!status) return;
@@ -93,6 +104,7 @@ function Home({ role }) {
 
   const signout = () => {
     signOut(auth);
+    route.push('/index');
   };
 
   return (
@@ -182,7 +194,7 @@ function Home({ role }) {
                     <th className="border-b border-r border-blue-700 w-28">
                       ประเภท
                     </th>
-                    {role === 1  ? (
+                    {role === 1 ? (
                       <th className="border-b border-r border-blue-700 w-48 ">
                         พื้นที่รับผิดชอบ
                       </th>
@@ -192,7 +204,6 @@ function Home({ role }) {
                     <th className="border-b border-l border-blue-700 w-48">
                       สถานะ
                     </th>
-                   
                   </tr>
                 </thead>
                 <tbody className="">

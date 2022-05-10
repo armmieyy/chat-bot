@@ -55,7 +55,6 @@ function Report({ role, district, setRole, setDistrict }) {
       for (const key in res) {
         arr.push({ ...res[key], id: key });
       }
-      console.log(district);
       if (role == 1) {
         arr = arr.filter(item => item.status !== 'complete');
       } else {
@@ -90,7 +89,7 @@ function Report({ role, district, setRole, setDistrict }) {
   }, [fillterData, currentpage]);
 
   const reset = () => {
-    setStatus('wait');
+    setStatus('active_zone');
     setKind('ทั้งหมด');
     setFillterData(fetchData.filter(item => item.status === status));
   };
@@ -104,6 +103,7 @@ function Report({ role, district, setRole, setDistrict }) {
 
   const signout = () => {
     signOut(auth);
+    router.push('/index')
   };
 
   const complete = key => {
@@ -131,7 +131,6 @@ function Report({ role, district, setRole, setDistrict }) {
     <>
       <div>
         <Sidebar signOut={signout} role={role} />
-
         <div className="pt-4 px-12">
           <div className="flex justify-end mb-4">
             <div className="mr-4">
@@ -176,13 +175,13 @@ function Report({ role, district, setRole, setDistrict }) {
               <select
                 name=""
                 id="status"
-                defaultValue={'wait'}
+                defaultValue={'active_zone'}
                 className="border border-blue-700 rounded"
                 onChange={e => {
                   setStatus(e.target.value);
                 }}
               >
-                <option className="text-lg" value="wait">
+                <option className="text-lg" value="active_zone">
                   รอการตรวจสอบ
                 </option>
 
