@@ -1,10 +1,20 @@
 {
   "hosting": {
     "public": "out",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+    "ignore": ["**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "destination": "/Reply/[slug].html",
+        "regex": "^/Reply/([^/]+?)(?:/)?$"
+      },
+      {
+        "destination": "/Reply/[slug].html",
+        "regex": "^/reply/([^/]+?)(?:/)?$"
+      },
+      {
+        "destination": "thankyou.html",
+        "regex": "^/thankyou"
+      }
     ]
   },
   "functions": {

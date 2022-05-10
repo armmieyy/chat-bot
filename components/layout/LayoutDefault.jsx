@@ -7,7 +7,7 @@ import styles from '../../styles/index.module.css'
 
 export default function Layout({
   children,
-  title = 'Government',
+  title = 'Chat Bot',
   description = 'Next.js with Sequelize | A boilerplate Next.js and Sequelize from dyarfi.github.io',
   keywords = 'Next.js, Sequelize, ORM, JWT, Json Web Tokens, Authentication, Application',
   type = 'object',

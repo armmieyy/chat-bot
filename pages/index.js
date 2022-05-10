@@ -68,18 +68,7 @@ function Login({ setRole, setDistrict }) {
           layout="vertical"
           requiredMark={true}
         >
-          <div className="text-white flex items-center justify-between mt-2 mr-2 ml-2">
-            <p className=""></p>
-            <p className="">
-              ยังไม่บัญชีผู้ใช้ ?
-              <a
-                href="register"
-                className="text-white no-underline hover:text-white hover:text-gray-800"
-              >
-                สมัครสมาชิก
-              </a>
-            </p>
-          </div>
+       
           <Form.Item
             name="username"
             className="block text-gray-700 mb-10 text-sm font-bold  w-full"
@@ -131,14 +120,7 @@ function Login({ setRole, setDistrict }) {
             >
               <div className="text-blue-600 font-bold">LOGIN</div>
             </Button>
-            <div className="pt-4">
-              <a
-                href="/forget_password"
-                className="text-white hover:text-gray-800 pl-72 pt-6"
-              >
-                ลืมรหัสผ่าน?
-              </a>
-            </div>
+           
           </Form.Item>
         </Form>
       </div>

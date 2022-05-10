@@ -54,7 +54,7 @@ exports.giveRate = functions.https.onRequest(async (req, res) => {
       return (current_value || 0) + 1;
     });
     console.log(req.body);
-    res.redirect('http://localhost:3000/thankyou');
+    res.redirect('https://chatbot-49334.web.app/thankyou.html');
   });
 });
 

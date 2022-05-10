@@ -233,14 +233,14 @@ function Report({ role, district, setRole, setDistrict }) {
                         key={item.id}
                         className="cursor-pointer hover:bg-blue-100 h-10 border border-blue-700"
                       >
-                        <Link href={`/reply/${item.id}`}>
+                        <Link href={`/Reply/${item.id}`}>
                           <th className="border-b border-r border-blue-700 w-16">
                             {currentpage === 1 && index + 1}
                             {currentpage > 1 &&
                               index + 1 + currentpage * 10 - 10}
                           </th>
                         </Link>
-                        <Link href={`/reply/${item.id}`}>
+                        <Link href={`/Reply/${item.id}`}>
                           <th className="border-b border-r border-blue-700 w-48">
                             {item.date}
                           </th>
@@ -249,7 +249,7 @@ function Report({ role, district, setRole, setDistrict }) {
                         <th
                           className="border-b border-r border-blue-700 w-[423px]"
                           onClick={() => {
-                            router.push(`/reply/${item.id}`);
+                            router.push(`/Reply/${item.id}`);
                           }}
                         >
                           {item.message}
@@ -257,7 +257,7 @@ function Report({ role, district, setRole, setDistrict }) {
                         <th
                           className="border-b border-r border-blue-700 w-28"
                           onClick={() => {
-                            router.push(`/reply/${item.id}`);
+                            router.push(`/Reply/${item.id}`);
                           }}
                         >
                           {item.displayName}
@@ -265,7 +265,7 @@ function Report({ role, district, setRole, setDistrict }) {
                         <th
                           className="border-b border-r border-blue-700 w-48 "
                           onClick={() => {
-                            router.push(`/reply/${item.id}`);
+                            router.push(`/Reply/${item.id}`);
                           }}
                         >
                           {item.kind}
@@ -273,7 +273,7 @@ function Report({ role, district, setRole, setDistrict }) {
                         <th
                           className="border-b border-r border-blue-700 w-48"
                           onClick={() => {
-                            router.push(`/reply/${item.id}`);
+                            router.push(`/Reply/${item.id}`);
                           }}
                         >
                           {item.status === 'active_zone' && 'รอการตรวจสอบ'}
