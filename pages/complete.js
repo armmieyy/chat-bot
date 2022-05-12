@@ -25,7 +25,6 @@ function Home({ role, district, setDistrict, setRole }) {
   const [fillterData, setFillterData] = useState([]);
   const [showData, setShowdata] = useState([]);
   const [status, setStatus] = useState('complete');
-  const [row, setRow] = useState(10);
   const [kind, setKind] = useState();
   const [currentpage, setCurrentpage] = useState(1);
   const [totalpage, setTotalpage] = useState();

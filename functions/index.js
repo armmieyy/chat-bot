@@ -5,6 +5,7 @@ const os = require('os');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4, v4 } = require('uuid');
+const { deleteUser, getAuth } = require('firebase/auth');
 const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
@@ -39,6 +40,13 @@ const pushMessage = (replyToken, payload) => {
     }),
   });
 };
+exports.deleteUserById = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    console.log(req.body.uid);
+    admin.auth().deleteUser(req.body.uid);
+    res.send('ok');
+  });
+});
 
 exports.giveRate = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
