@@ -1,7 +1,7 @@
 import React from 'react';
 import Nevbar from '../../components/Navbar';
 import { useEffect, useState } from 'react';
-import { onValue, ref, remove, update } from 'firebase/database';
+import { onValue, ref, remove, update, set } from 'firebase/database';
 import { db } from '../../plugins/firebaseConfig';
 import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
@@ -12,6 +12,9 @@ import SaveModal from '../../components/Modal/SaveModal';
 import DeleteModal from '../../components/Modal/DeleteModal';
 import CreateModal from '../../components/Modal/createModal';
 import UpdateModal from '../../components/Modal/UpdateModal';
+import CreateZone from '../../components/Modal/CreateZoneModal';
+import CreateZoneModal from '../../components/Modal/CreateZoneModal';
+import DeleteZoneModel from '../../components/Modal/DeleteZoneModel';
 
 function index({ role, setRole, district, setDistrict }) {
   const route = useRouter();
@@ -25,8 +28,11 @@ function index({ role, setRole, district, setDistrict }) {
   const API = process.env.NEXT_PUBLIC_API_FUNCTION;
   const [delModal, setDelModal] = useState(<></>);
   const [hiddenAccount, setHiddenAccount] = useState(false);
+  const [hiddenZone, setHiddenZone] = useState(false);
   const [modalCreateUser, setModalCreateUser] = useState(<></>);
   const [updateModal, setUpdateModal] = useState(<></>);
+  const [createZoneModal, setCreateZoneModal] = useState(<></>);
+  const [delZoneModal, setDelZoneModal] = useState(<></>);
 
   const signout = () => {
     signOut(auth);
@@ -96,12 +102,40 @@ function index({ role, setRole, district, setDistrict }) {
     setUpdateModal(<UpdateModal user={user} setUpdateModal={setUpdateModal} />);
   };
 
+  const createZone = () => {
+    const newIndex = allzone.length;
+    const refzone = ref(db, `/district/${newIndex}`);
+    setCreateZoneModal(
+      <CreateZoneModal
+        set={set}
+        refzone={refzone}
+        setCreateZoneModal={setCreateZoneModal}
+      />,
+    );
+    console.log(newIndex);
+  };
+
+  const deleteZone = index => {
+    const refzone = ref(db, `/district/${index}`);
+    const zone = allzone[index];
+    setDelZoneModal(
+      <DeleteZoneModel
+        zone={zone}
+        refzone={refzone}
+        remove={remove}
+        setDelZoneModal={setDelZoneModal}
+      />,
+    );
+  };
+
   return (
     <>
       <SaveModal hidden={modalSave} />
       {delModal}
       {modalCreateUser}
       {updateModal}
+      {createZoneModal}
+      {delZoneModal}
       <Nevbar signout={signout} />
       <div className="pt-4 px-12">
         <Row className="">
@@ -207,6 +241,72 @@ function index({ role, setRole, district, setDistrict }) {
                 </tbody>
               </table>
             )}
+          </Col>
+        </Row>
+        <Row className="mt-5">
+          <Col span={24} className="bg-blue-500 p-5 rounded-t-md">
+            <Row>
+              <Col span={23}>
+                <span className="text-2xl p-5 text-white">ตั้งค่าบัญชี</span>
+              </Col>
+              <Col span={1}>
+                <button
+                  className="text-white "
+                  onClick={() => setHiddenZone(!hiddenZone)}
+                >
+                  {hiddenZone ? <>เปิด</> : <>ปิด</>}
+                </button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="bg-gray-300" hidden={hiddenZone}>
+          <Col className="px-5 mt-2 ml-auto">
+            <button
+              className="p-3 px-6 bg-blue-500 rounded-lg text-white hover:opacity-70"
+              onClick={() => createZone()}
+            >
+              เพิ่ม
+            </button>
+          </Col>
+          <Col span={24} className="p-5">
+            <table className="table w-full border bg-white">
+              <thead>
+                <tr className="border">
+                  <th className="w-4 p-2 text-center">อันดับ</th>
+                  <th className="w-24 p-2">พื้นที่รับผิดชอบ</th>
+                  {/* <th className="w-16 p-2">Action</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                {allzone &&
+                  allzone.map((item, index) => (
+                    <tr className="border-b border-dashed" key={index}>
+                      <td className="w-4 p-2 text-center">{index}</td>
+                      <td className="w-24 p-2 text-center">{item}</td>
+                      <td className="p-2  w-16 space-x-1  items-center ">
+                        <button
+                          className="p-1 px-4 bg-yellow-300 rounded-lg text-white"
+                          onClick={() => {
+                            updateUser(index);
+                          }}
+                        >
+                          แก้ไข
+                        </button>
+
+                        <button
+                          className="p-1 px-5 bg-red-600  rounded-lg text-white"
+                          onClick={() => {
+                            deleteZone(index);
+                          }}
+                        >
+                          ลบ
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
           </Col>
         </Row>
       </div>
