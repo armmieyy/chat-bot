@@ -10,6 +10,7 @@ import axios from 'axios';
 import { getApp } from 'firebase/app';
 import SaveModal from '../../components/Modal/SaveModal';
 import DeleteModal from '../../components/Modal/DeleteModal';
+import CreateModal from '../../components/Modal/createModal';
 
 function index({ role, setRole, district, setDistrict }) {
   const route = useRouter();
@@ -22,6 +23,8 @@ function index({ role, setRole, district, setDistrict }) {
   const [modalSave, setModalSave] = useState(true);
   const API = process.env.NEXT_PUBLIC_API_FUNCTION;
   const [delModal, setDelModal] = useState(<></>);
+  const [hiddenAccount, setHiddenAccount] = useState(false);
+  const [modalCreateUser, setModalCreateUser] = useState(<></>);
 
   const signout = () => {
     signOut(auth);
@@ -99,16 +102,39 @@ function index({ role, setRole, district, setDistrict }) {
     <>
       <SaveModal hidden={modalSave} />
       {delModal}
+      {modalCreateUser}
       <Nevbar signout={signout} />
       <div className="pt-4 px-12">
         <Row className="">
           <Col span={24} className="bg-blue-500 p-5 rounded-t-md">
-            <span className="text-2xl p-5 text-white">ตั้งค่าบัญชี</span>
+            <Row>
+              <Col span={23}>
+                <span className="text-2xl p-5 text-white">ตั้งค่าบัญชี</span>
+              </Col>
+              <Col span={1}>
+                <button
+                  className="text-white "
+                  onClick={() => setHiddenAccount(!hiddenAccount)}
+                >
+                  {hiddenAccount ? <>เปิด</> : <>ปิด</>}
+                </button>
+              </Col>
+            </Row>
           </Col>
         </Row>
-        <Row className="bg-gray-300">
+        <Row className="bg-gray-300" hidden={hiddenAccount}>
           <Col className="px-5 mt-2 ml-auto">
-            <button className="p-3 px-6 bg-blue-500 rounded-lg text-white">
+            <button
+              className="p-3 px-6 bg-blue-500 rounded-lg text-white hover:opacity-70"
+              onClick={() =>
+                setModalCreateUser(
+                  <CreateModal
+                    setModalCreateUser={setModalCreateUser}
+                    allzone={allzone}
+                  />,
+                )
+              }
+            >
               เพิ่ม
             </button>
           </Col>

@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4, v4 } = require('uuid');
 const { deleteUser, getAuth } = require('firebase/auth');
+const e = require('cors');
 const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
@@ -45,6 +46,32 @@ exports.deleteUserById = functions.https.onRequest(async (req, res) => {
     console.log(req.body.uid);
     admin.auth().deleteUser(req.body.uid);
     res.send('ok');
+  });
+});
+exports.createUser = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    const db = admin.database();
+
+    console.log(req.body);
+    admin
+      .auth()
+      .createUser({
+        email: req.body.email,
+        emailVerified: false,
+        password: req.body.password,
+      })
+      .then(resposn => {
+        console.log(resposn.uid);
+        db.ref(`/permission/${resposn.uid}`).set({
+          district: parseInt(req.body.zone),
+          email: resposn.email,
+          role: 2,
+        });
+        res.send('ok');
+      })
+      .catch(err => {
+        res.send(err.code);
+      });
   });
 });
 

@@ -11,7 +11,6 @@ function DeleteModal({
   const API = process.env.NEXT_PUBLIC_API_FUNCTION;
   return (
     <div
-      //   hidden={hidden}
       className=" overflow-y-auto overflow-x-hidden fixed w-1/2 z-50 left-1/3 top-1/3 h-modal md:h-full"
     >
       <div className="relative p-4 w-full max-w-md h-full">
