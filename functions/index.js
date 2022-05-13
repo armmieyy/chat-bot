@@ -48,11 +48,24 @@ exports.deleteUserById = functions.https.onRequest(async (req, res) => {
     res.send('ok');
   });
 });
+exports.updateUserById = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    console.log(req.body);
+    admin
+      .auth()
+      .updateUser(req.body.id, { password: req.body.password })
+      .then(resposn => {
+        res.send('ok');
+      })
+      .catch(err => {
+        res.send(err.code);
+      });
+  });
+});
+
 exports.createUser = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     const db = admin.database();
-
-    console.log(req.body);
     admin
       .auth()
       .createUser({

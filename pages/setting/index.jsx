@@ -11,6 +11,7 @@ import { getApp } from 'firebase/app';
 import SaveModal from '../../components/Modal/SaveModal';
 import DeleteModal from '../../components/Modal/DeleteModal';
 import CreateModal from '../../components/Modal/createModal';
+import UpdateModal from '../../components/Modal/UpdateModal';
 
 function index({ role, setRole, district, setDistrict }) {
   const route = useRouter();
@@ -25,6 +26,7 @@ function index({ role, setRole, district, setDistrict }) {
   const [delModal, setDelModal] = useState(<></>);
   const [hiddenAccount, setHiddenAccount] = useState(false);
   const [modalCreateUser, setModalCreateUser] = useState(<></>);
+  const [updateModal, setUpdateModal] = useState(<></>);
 
   const signout = () => {
     signOut(auth);
@@ -53,15 +55,6 @@ function index({ role, setRole, district, setDistrict }) {
         setAllzone(res);
       });
     }
-  }, [user]);
-
-  useEffect(() => {
-    if (!allzone) return;
-    console.log(allzone);
-  }, [allzone]);
-  useEffect(() => {
-    if (!user) return;
-    console.log(user);
   }, [user]);
 
   const zoneChange = (e, index) => {
@@ -98,11 +91,17 @@ function index({ role, setRole, district, setDistrict }) {
     );
   };
 
+  const updateUser = index => {
+    const user = alluser[index];
+    setUpdateModal(<UpdateModal user={user} setUpdateModal={setUpdateModal} />);
+  };
+
   return (
     <>
       <SaveModal hidden={modalSave} />
       {delModal}
       {modalCreateUser}
+      {updateModal}
       <Nevbar signout={signout} />
       <div className="pt-4 px-12">
         <Row className="">
@@ -178,7 +177,12 @@ function index({ role, setRole, district, setDistrict }) {
                         </select>
                       </td>
                       <td className="p-2  w-16 space-x-1  items-center ">
-                        <button className="p-1 px-4 bg-yellow-300 rounded-lg text-white">
+                        <button
+                          className="p-1 px-4 bg-yellow-300 rounded-lg text-white"
+                          onClick={() => {
+                            updateUser(index);
+                          }}
+                        >
                           แก้ไข
                         </button>
                         <button
