@@ -2,12 +2,14 @@ import React from 'react';
 import Nevbar from '../../components/Navbar';
 import { useEffect, useState } from 'react';
 import { onValue, ref, remove, update } from 'firebase/database';
-import { db, admin } from '../../plugins/firebaseConfig';
-import { deleteUser, getAuth, signOut } from 'firebase/auth';
+import { db } from '../../plugins/firebaseConfig';
+import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { Row, Col } from 'antd';
 import axios from 'axios';
 import { getApp } from 'firebase/app';
+import SaveModal from '../../components/Modal/SaveModal';
+import DeleteModal from '../../components/Modal/DeleteModal';
 
 function index({ role, setRole, district, setDistrict }) {
   const route = useRouter();
@@ -18,6 +20,14 @@ function index({ role, setRole, district, setDistrict }) {
   const [allzone, setAllzone] = useState([]);
   const [edit, setEdit] = useState({});
   const [modalSave, setModalSave] = useState(true);
+  const API = process.env.NEXT_PUBLIC_API_FUNCTION;
+  const [delModal, setDelModal] = useState(<></>);
+
+  const signout = () => {
+    signOut(auth);
+    route.push('/index');
+  };
+
   useEffect(() => {
     if (user === null) {
       //   route.push('/index');
@@ -33,14 +43,13 @@ function index({ role, setRole, district, setDistrict }) {
         for (const key in res) {
           arr.push({ ...res[key], id: key });
         }
-        setAlluser(arr);
+        setAlluser(arr.filter(item => item.id != user.uid));
       });
       onValue(ref(db, '/district'), snapshot => {
         const res = snapshot.val();
         setAllzone(res);
       });
     }
-    // if (role != 1) route.push('/dashboard');
   }, [user]);
 
   useEffect(() => {
@@ -75,35 +84,22 @@ function index({ role, setRole, district, setDistrict }) {
   const deleteUsers = index => {
     const user = alluser[index];
     const refUser = ref(db, `/permission/${user.id}`);
-
-    if (confirm('ลบจริงหรอ')) {
-      console.log('ลบ');
-
-      axios.post(
-        'http://localhost:5001/chatbot-49334/us-central1/deleteUserById',
-        { uid: user.id },
-      );
-      remove(refUser);
-    }
+    setDelModal(
+      <DeleteModal
+        email={user.email}
+        user={user}
+        remove={remove}
+        refUser={refUser}
+        setDelModal={setDelModal}
+      />,
+    );
   };
 
   return (
     <>
-      <div
-        hidden={modalSave}
-        className=" overflow-y-auto overflow-x-hidden fixed w-1/2 z-50 left-1/3 top-1/3 h-modal md:h-full"
-      >
-        <div className="relative p-4 w-full max-w-md h-full md:h-auto">
-          <div className="relative bg-white border rounded-lg shadow dark:bg-gray-700">
-            <div className="p-16  text-center">
-              <h3 className="mb-5 font-normal text-green-500 text-4xl">
-                บันทึกสำเร็จ
-              </h3>
-            </div>
-          </div>
-        </div>
-      </div>
-      <Nevbar />
+      <SaveModal hidden={modalSave} />
+      {delModal}
+      <Nevbar signout={signout} />
       <div className="pt-4 px-12">
         <Row className="">
           <Col span={24} className="bg-blue-500 p-5 rounded-t-md">
