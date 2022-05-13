@@ -15,6 +15,7 @@ import UpdateModal from '../../components/Modal/UpdateModal';
 import CreateZone from '../../components/Modal/CreateZoneModal';
 import CreateZoneModal from '../../components/Modal/CreateZoneModal';
 import DeleteZoneModel from '../../components/Modal/DeleteZoneModel';
+import UpdateZoneModal from '../../components/Modal/UpdateZoneModal';
 
 function index({ role, setRole, district, setDistrict }) {
   const route = useRouter();
@@ -33,6 +34,7 @@ function index({ role, setRole, district, setDistrict }) {
   const [updateModal, setUpdateModal] = useState(<></>);
   const [createZoneModal, setCreateZoneModal] = useState(<></>);
   const [delZoneModal, setDelZoneModal] = useState(<></>);
+  const [updateZoneModal, setUpdateZoneModal] = useState(<></>);
 
   const signout = () => {
     signOut(auth);
@@ -123,7 +125,22 @@ function index({ role, setRole, district, setDistrict }) {
         zone={zone}
         refzone={refzone}
         remove={remove}
+        index={index}
         setDelZoneModal={setDelZoneModal}
+      />,
+    );
+  };
+
+  const updateZone = index => {
+    const refzone = ref(db, `/district`);
+    const zone = allzone[index];
+    setUpdateZoneModal(
+      <UpdateZoneModal
+        zone={zone}
+        update={update}
+        index={index}
+        refzone={refzone}
+        setUpdateZoneModal={setUpdateZoneModal}
       />,
     );
   };
@@ -136,6 +153,7 @@ function index({ role, setRole, district, setDistrict }) {
       {updateModal}
       {createZoneModal}
       {delZoneModal}
+      {updateZoneModal}
       <Nevbar signout={signout} />
       <div className="pt-4 px-12">
         <Row className="">
@@ -247,7 +265,9 @@ function index({ role, setRole, district, setDistrict }) {
           <Col span={24} className="bg-blue-500 p-5 rounded-t-md">
             <Row>
               <Col span={23}>
-                <span className="text-2xl p-5 text-white">ตั้งค่าบัญชี</span>
+                <span className="text-2xl p-5 text-white">
+                  พื้นที่รับผิดชอบ
+                </span>
               </Col>
               <Col span={1}>
                 <button
@@ -288,7 +308,7 @@ function index({ role, setRole, district, setDistrict }) {
                         <button
                           className="p-1 px-4 bg-yellow-300 rounded-lg text-white"
                           onClick={() => {
-                            updateUser(index);
+                            updateZone(index);
                           }}
                         >
                           แก้ไข
