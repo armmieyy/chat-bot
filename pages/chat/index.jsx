@@ -74,7 +74,7 @@ function Index() {
           <Col span={24} className="p-5 mt-52 text">
             <Row className="bg-white w-full p-4 rounded-lg">
               <Col span={24} className="text-center">
-                <span>ขอบคูณที่ส่งข้อความหาเรา</span>
+                <span>ขอบคุณที่ส่งข้อความหาเรา</span>
                 <br />
                 <span>เจ้าหน้าที่จะตอบกลับเร็วๆนี้</span>
               </Col>

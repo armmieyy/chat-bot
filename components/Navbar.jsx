@@ -1,6 +1,34 @@
+import { onValue, ref } from 'firebase/database';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { db } from '../plugins/firebaseConfig';
 
-function Navbar({ signOut, role }) {
+function Navbar({ signOut, role, district }) {
+  const [message, setMessage] = useState(0);
+  useEffect(() => {
+    if (role == 1) {
+      onValue(ref(db, '/chat'), snapshot => {
+        const res = snapshot.val();
+        const arr = [];
+        for (const key in res) {
+          arr.push({ ...res[key], id: key });
+        }
+        setMessage(arr.filter(item => item.status == 'unread').length);
+      });
+    } else {
+      onValue(ref(db, '/chat'), snapshot => {
+        const res = snapshot.val();
+        const arr = [];
+        for (const key in res) {
+          arr.push({ ...res[key], id: key });
+        }
+        setMessage(
+          arr.filter(item => item.status == 'unread' && item.zone == district)
+            .length,
+        );
+      });
+    }
+  }, [role, district]);
   return (
     <>
       <nav className="flex items-center flex-wrap bg-blue-800 p-3 ">
@@ -11,6 +39,18 @@ function Navbar({ signOut, role }) {
         </a>
         <div className="hidden w-full lg:inline-flex lg:flex-grow lg:w-auto">
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto">
+            <Link href="/report">
+              <a className="relative lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white ">
+                ข้อความ
+                {message > 0 ? (
+                  <span className="w-5 h-5 bg-red-500 absolute -right-1 -top-1 rounded-full text-center ">
+                    <span className="relative -top-1">{message}</span>
+                  </span>
+                ) : (
+                  <></>
+                )}
+              </a>
+            </Link>
             <Link href="/report">
               <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white ">
                 รายละเอียด

@@ -130,7 +130,7 @@ function Report({ role, district, setRole, setDistrict }) {
   return (
     <>
       <div>
-        <Sidebar signOut={signout} role={role} />
+        <Sidebar signOut={signout} role={role} district={district} />
         <div className="pt-4 px-12">
           <div className="flex justify-end mb-4">
             <div className="mr-4">

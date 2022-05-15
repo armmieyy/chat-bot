@@ -129,7 +129,7 @@ function Management({ role, district }) {
   return (
     <>
       <div>
-        <Sidebar signOut={signout} role={role} />
+        <Sidebar signOut={signout} role={role} district={district}/>
 
         <div className="pt-4 px-12">
           <div className="flex justify-end mb-4">

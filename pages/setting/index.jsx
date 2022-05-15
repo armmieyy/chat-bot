@@ -160,7 +160,7 @@ function index({ role, setRole, district, setDistrict }) {
       {createZoneModal}
       {delZoneModal}
       {updateZoneModal}
-      <Nevbar signout={signout} role={role} />
+      <Nevbar signout={signout} role={role} district={district} />
 
       <div className="pt-4 px-12">
         <Row className="">

@@ -120,7 +120,7 @@ function Reply({ role, setRole }) {
 
   return (
     <>
-      <Navbar signOut={signout} role={role} />
+      <Navbar signOut={signout} role={role} district={district}/>
       <div className="pt-4 px-12">
         <Row className="border p-9 rounded-lg shadow-lg">
           <Col span={24}>
