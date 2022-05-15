@@ -35,15 +35,19 @@ function Navbar({ signOut, role }) {
                 Dashboard
               </a>
             </Link>
-            <span className="ml-5">
-              <Link href={'/setting'} passHref>
-                <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-red-600 hover:text-white">
-                  ตั้งค่า
-                </a>
-              </Link>
-            </span>
+            {role == 1 ? (
+              <span className="ml-5">
+                <Link href={'/setting'} passHref>
+                  <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-red-600 hover:text-white">
+                    ตั้งค่า
+                  </a>
+                </Link>
+              </span>
+            ) : (
+              <></>
+            )}
             <span className="" onClick={signOut}>
-              <Link href={'#'} passHref>
+              <Link href={'/index'} passHref>
                 <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-red-600 hover:text-white">
                   LogOut
                 </a>

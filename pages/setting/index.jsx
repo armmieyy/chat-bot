@@ -42,8 +42,14 @@ function index({ role, setRole, district, setDistrict }) {
   };
 
   useEffect(() => {
+    if (role != 1) {
+      route.push('/index');
+    }
+  }, [role]);
+
+  useEffect(() => {
     if (user === null) {
-      //   route.push('/index');
+      route.push('/index');
     } else {
       onValue(ref(db, `/permission/${user.uid}`), snapshot => {
         const res = snapshot.val();
@@ -154,7 +160,8 @@ function index({ role, setRole, district, setDistrict }) {
       {createZoneModal}
       {delZoneModal}
       {updateZoneModal}
-      <Nevbar signout={signout} />
+      <Nevbar signout={signout} role={role} />
+
       <div className="pt-4 px-12">
         <Row className="">
           <Col span={24} className="bg-blue-500 p-5 rounded-t-md">
@@ -280,7 +287,7 @@ function index({ role, setRole, district, setDistrict }) {
             </Row>
           </Col>
         </Row>
-        <Row className="bg-gray-300" hidden={hiddenZone}>
+        <Row className="bg-gray-300 mb-20" hidden={hiddenZone}>
           <Col className="px-5 mt-2 ml-auto">
             <button
               className="p-3 px-6 bg-blue-500 rounded-lg text-white hover:opacity-70"
