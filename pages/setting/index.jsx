@@ -180,7 +180,7 @@ function index({ role, setRole, district, setDistrict }) {
             </Row>
           </Col>
         </Row>
-        <Row className="bg-gray-300" hidden={hiddenAccount}>
+        <Row className="bg-gray-300 h-96 overflow-y-scroll" hidden={hiddenAccount}>
           <Col className="px-5 mt-2 ml-auto">
             <button
               className="p-3 px-6 bg-blue-500 rounded-lg text-white hover:opacity-70"
@@ -287,7 +287,7 @@ function index({ role, setRole, district, setDistrict }) {
             </Row>
           </Col>
         </Row>
-        <Row className="bg-gray-300 mb-20" hidden={hiddenZone}>
+        <Row className="bg-gray-300 mb-20 h-96 overflow-y-scroll" hidden={hiddenZone}>
           <Col className="px-5 mt-2 ml-auto">
             <button
               className="p-3 px-6 bg-blue-500 rounded-lg text-white hover:opacity-70"

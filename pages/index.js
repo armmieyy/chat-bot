@@ -27,12 +27,13 @@ import {
   notification,
 } from 'antd';
 import { async } from '@firebase/util';
+import { set } from 'nprogress';
 
 const { Text, Title } = Typography;
 
 const { TextArea } = Input;
 
-function Login({ setRole, setDistrict }) {
+function Login({ setRole, setDistrict, setUser }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const route = useRouter();
@@ -41,6 +42,8 @@ function Login({ setRole, setDistrict }) {
     await signInWithEmailAndPassword(auth, email, password)
       .then(async userCredential => {
         let user = userCredential.user;
+        console.log(user.uid)
+        setUser(user.uid);
         await onValue(ref(db, `/permission/${user.uid}`), snapshot => {
           const res = snapshot.val();
           setRole(res.role);
@@ -68,7 +71,6 @@ function Login({ setRole, setDistrict }) {
           layout="vertical"
           requiredMark={true}
         >
-       
           <Form.Item
             name="username"
             className="block text-gray-700 mb-10 text-sm font-bold  w-full"
@@ -120,7 +122,6 @@ function Login({ setRole, setDistrict }) {
             >
               <div className="text-blue-600 font-bold">LOGIN</div>
             </Button>
-           
           </Form.Item>
         </Form>
       </div>

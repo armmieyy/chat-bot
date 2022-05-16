@@ -39,7 +39,7 @@ function Navbar({ signOut, role, district }) {
         </a>
         <div className="hidden w-full lg:inline-flex lg:flex-grow lg:w-auto">
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto">
-            <Link href="/report">
+            <Link href="/Message">
               <a className="relative lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white ">
                 ข้อความ
                 {message > 0 ? (
@@ -79,7 +79,7 @@ function Navbar({ signOut, role, district }) {
               <span className="ml-5">
                 <Link href={'/setting'} passHref>
                   <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-red-600 hover:text-white">
-                    ตั้งค่า
+                    ตั้งค่าผู้ใช้
                   </a>
                 </Link>
               </span>

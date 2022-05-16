@@ -28,7 +28,7 @@ function Index() {
     const liff = (await import('@line/liff')).default;
     try {
       await liff.init({
-        liffId: `1657134020-AkBJw8Kb`,
+        liffId: `1657138216-JeY5xaKM`,
       });
       liff.ready.then(() => {
         if (!liff.isLoggedIn()) liff.login();

@@ -14,6 +14,14 @@
       {
         "destination": "thankyou.html",
         "regex": "^/thankyou"
+      },
+      {
+        "destination": "/Message/[slug].html",
+        "regex": "^/Message/([^/]+?)(?:/)?$"
+      },
+      {
+        "destination": "/message/[slug].html",
+        "regex": "^/Message/([^/]+?)(?:/)?$"
       }
     ]
   },

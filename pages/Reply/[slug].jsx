@@ -13,6 +13,7 @@ function Reply({ role, setRole }) {
   const [textReply, setTextReply] = useState('');
   const [district, setDistrict] = useState([]);
   const [zone_control, setzone_control] = useState('');
+  const [zone, setZone] = useState();
   const { slug } = router.query;
   const auth = getAuth();
   const user = auth.currentUser;
@@ -31,6 +32,7 @@ function Reply({ role, setRole }) {
     onValue(ref(db, `/permission/${user.uid}`), snapshot => {
       const res = snapshot.val();
       setRole(res.role);
+      setZone(res.district);
     });
 
     onValue(ref(db, `/district`), snapshot => {
@@ -120,7 +122,7 @@ function Reply({ role, setRole }) {
 
   return (
     <>
-      <Navbar signOut={signout} role={role} district={district}/>
+      <Navbar signOut={signout} role={role} district={zone} />
       <div className="pt-4 px-12">
         <Row className="border p-9 rounded-lg shadow-lg">
           <Col span={24}>

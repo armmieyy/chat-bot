@@ -9,6 +9,7 @@ import { useState } from 'react';
 function MyApp({ Component, pageProps }) {
   const [role, setRole] = useState();
   const [district, setDistrict] = useState();
+  const [user, setUser] = useState();
   return (
     <>
       <Head>
@@ -21,6 +22,8 @@ function MyApp({ Component, pageProps }) {
         setDistrict={setDistrict}
         role={role}
         district={district}
+        setUser={setUser}
+        user={user}
       />
     </>
   );

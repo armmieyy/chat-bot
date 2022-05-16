@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4, v4 } = require('uuid');
 const { deleteUser, getAuth } = require('firebase/auth');
-const e = require('cors');
+const { async } = require('@firebase/util');
 const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
@@ -32,6 +32,7 @@ const reply = (replyToken, payload) => {
   });
 };
 const pushMessage = (replyToken, payload) => {
+  console.log(payload);
   request.post({
     uri: `${LINE_MESSAGING_API}/message/push`,
     headers: LINE_HEADER,
@@ -106,6 +107,14 @@ exports.giveRate = functions.https.onRequest(async (req, res) => {
   });
 });
 
+exports.replyChat = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    // console.log(req.body.userId);
+    const text = `เรียนคุณ  เนื่องจากปัญหาที่แจ้งเข้ามาเรื่อง  เราไม่สามารถดำเนินการแก้ไขให้ได้`;
+    pushMessage(req.body.uid, [{ type: 'text', text: text }]);
+  });
+});
+
 exports.messageReply = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     if (req.body.type === 'zone_control') {
@@ -117,6 +126,94 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
         status: 'active_zone',
       });
 
+      res.send('ok');
+    }
+    if (req.body.type === 'replyChat') {
+      const text = `เรียนคุณ  เนื่องจากปัญหาที่แจ้งเข้ามาเรื่อง  เราไม่สามารถดำเนินการแก้ไขให้ได้`;
+      pushMessage(req.body.uid, [
+        {
+          type: 'flex',
+          altText: 'ดำเนินการเสร็จสิ้น',
+          contents: {
+            type: 'bubble',
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: 'ตอบกลับจากเจ้าหน้าที่',
+                  weight: 'bold',
+                  size: 'xl',
+                  wrap: true,
+                },
+                {
+                  type: 'box',
+                  layout: 'vertical',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: `${req.body.date}`,
+                    },
+                  ],
+                },
+                {
+                  type: 'box',
+                  layout: 'vertical',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: 'ข้อความที่แจ้ง',
+                      offsetTop: 'xl',
+                    },
+                  ],
+                  paddingTop: 'xl',
+                  paddingBottom: 'xxl',
+                },
+                {
+                  type: 'separator',
+                },
+                {
+                  type: 'box',
+                  layout: 'vertical',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: `${req.body.msg}`,
+                      wrap: true,
+                    },
+                  ],
+                  paddingBottom: 'xxl',
+                },
+                {
+                  type: 'box',
+                  layout: 'vertical',
+                  contents: [
+                    {
+                      type: 'text',
+                      text: 'ข้อความตอบกลับ',
+                    },
+                    {
+                      type: 'separator',
+                    },
+                    {
+                      type: 'text',
+                      text: `${req.body.reply}`,
+                      wrap: true,
+                    },
+                  ],
+                  paddingBottom: 'xxl',
+                },
+              ],
+              paddingAll: 'md',
+              margin: 'none',
+            },
+          },
+        },
+      ]);
+      const db = admin.database();
+      const ref = db.ref(`/chat/${req.body.key}`);
+      await ref.update({ status: 'reply', reply: `${req.body.reply}` });
       res.send('ok');
     }
 
