@@ -24,10 +24,7 @@ function CreateZoneModal({ set, refzone, setCreateZoneModal }) {
               </span>
               <br />
               <span className="text-red-500">{errmsg && errmsg}</span>
-              <div className="flex mt-3 pl-6">
-                <label htmlFor="" className="mr-3 text-left w-1/6">
-                  แขวง
-                </label>
+              <div className="flex mt-3 pl-24">
                 <input
                   type="text"
                   name="zone"

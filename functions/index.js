@@ -18,7 +18,7 @@ const LINE_HEADER = {
   Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
 };
 
-const NGROKURL = 'https://c551-2001-fb1-101-f777-29b3-4174-7d3b-f84.ngrok.io';
+const NGROKURL = 'https://914f-2403-6200-8858-b01b-4db1-1ef4-d4a4-6592.ap.ngrok.io';
 const GIVERATE = NGROKURL + '/chatbot-49334/us-central1/giveRate?rate=';
 
 const reply = (replyToken, payload) => {
@@ -591,7 +591,7 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
       await db.ref(`/order/${fetchData[0].id}`).update({ kind: message.text });
       await reply(event.replyToken, {
         type: 'text',
-        text: 'โปรดแจ้งปัญหา รายละเอียดปัญหา',
+        text: 'โปรดแจ้งรายละเอียดของปัญหา',
       });
 
       return res.send('200');
@@ -688,7 +688,7 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
       });
       await reply(event.replyToken, {
         type: 'text',
-        text: 'กำลังกำเนินการส่งเรื่องโปรดรอตอบกลับจากเจ้าหน้าที่',
+        text: 'กำลังดำเนินการส่งเรื่องโปรดรอตอบกลับ',
       });
 
       return res.send('200');

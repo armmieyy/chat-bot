@@ -23,10 +23,7 @@ function UpdateZoneModal({ zone, setUpdateZoneModal, update, refzone, index }) {
               </span>
               <br />
               <span className="text-red-500">{errmsg && errmsg}</span>
-              <div className="flex mt-3 pl-6">
-                <label htmlFor="" className="mr-3 text-left w-1/6">
-                  แขวง
-                </label>
+              <div className="flex mt-3 pl-24">
                 <input
                   type="text"
                   name="zone"
@@ -44,7 +41,7 @@ function UpdateZoneModal({ zone, setUpdateZoneModal, update, refzone, index }) {
                 className="bg-green-500 text-white w-1/2 rounded-lg p-1 hover:opacity-70"
                 type="submit"
               >
-                สร้าง
+                แก้ไข
               </button>
               <button
                 className="bg-gray-300  w-1/2 rounded-lg p-1 hover:opacity-70"

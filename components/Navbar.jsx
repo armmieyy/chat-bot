@@ -41,7 +41,7 @@ function Navbar({ signOut, role, district }) {
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto">
             <Link href="/Message">
               <a className="relative lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white ">
-                ข้อความ
+              ข้อมูลสอบถามทั่วไป
                 {message > 0 ? (
                   <span className="w-5 h-5 bg-red-500 absolute -right-1 -top-1 rounded-full text-center ">
                     <span className="relative -top-1">{message}</span>
@@ -51,20 +51,20 @@ function Navbar({ signOut, role, district }) {
                 )}
               </a>
             </Link>
-            <Link href="/report">
-              <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white ">
-                รายละเอียด
-              </a>
-            </Link>
             {role === 1 ? (
               <Link href="/management">
                 <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white ">
-                  จัดการข้อมูล
+                พื้นที่รับผิดชอบ
                 </a>
               </Link>
             ) : (
               <></>
             )}
+            <Link href="/report">
+              <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white ">
+              ข้อร้องเรียน
+              </a>
+            </Link>
             <Link href="/complete">
               <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-blue-600 hover:text-white">
                 Complete
@@ -78,7 +78,7 @@ function Navbar({ signOut, role, district }) {
             {role == 1 ? (
               <span className="ml-5">
                 <Link href={'/setting'} passHref>
-                  <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-red-600 hover:text-white">
+                  <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-lg text-white font-bold items-center justify-center hover:bg-green-600 hover:text-white">
                     ตั้งค่าผู้ใช้
                   </a>
                 </Link>
