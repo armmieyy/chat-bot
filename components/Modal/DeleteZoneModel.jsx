@@ -7,7 +7,7 @@ function DeleteZoneModel({ zone, refzone, setDelZoneModal, remove }) {
         <div className="relative bg-white border rounded-lg shadow ">
           <div className="p-16  text-center">
             <span className="mb-5 font-normal text-yellow-500 text-2xl">
-              คุณต้องการแขวง
+              คุณต้องการลบ
             </span>
             <br />
             <span className="mb-5 font-normal text-yellow-500 text-2xl">
