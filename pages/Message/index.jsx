@@ -129,9 +129,9 @@ function Index({ role, district, setRole, setDistrict }) {
                       จาก
                     </th>
 
-                    <th className="border-b border-r border-blue-700 w-48 ">
+                    {/* <th className="border-b border-r border-blue-700 w-48 ">
                       พื้นที่รับผิดชอบ
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody className="">
@@ -158,11 +158,11 @@ function Index({ role, district, setRole, setDistrict }) {
                             {item.from.displayName}
                           </th>
                         </Link>
-                        <Link href={`/Message/${item.id}?id=${user.uid}`}>
+                        {/* <Link href={`/Message/${item.id}?id=${user.uid}`}>
                           <th className="border-b border-r border-blue-700 w-48 ">
                             {allzone && allzone[item.zone]}
                           </th>
-                        </Link>
+                        </Link> */}
                       </tr>
                     ))}
                 </tbody>

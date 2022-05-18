@@ -3,6 +3,7 @@ import { db } from '../../plugins/firebaseConfig';
 import Layout from '../../components/layout/LayoutDefault';
 import { Row, Col } from 'antd';
 import { onValue, push, ref } from 'firebase/database';
+import { set } from 'nprogress';
 
 function Index() {
   const [profile, setProfile] = useState();
@@ -65,6 +66,11 @@ function Index() {
     push(ref(db, '/chat'), payload).then(() => {
       setSend(true);
     });
+    setSend(true);
+  };
+
+  const close = () => {
+    window.liff.closeWindow();
   };
 
   return (
@@ -72,11 +78,21 @@ function Index() {
       <Row className="">
         {send == true ? (
           <Col span={24} className="p-5 mt-52 text">
-            <Row className="bg-white w-full p-4 rounded-lg">
+            <Row className="bg-white w-full p-4 rounded-t-lg">
               <Col span={24} className="text-center">
                 <span>ขอบคุณที่ส่งข้อความหาเรา</span>
                 <br />
                 <span>เจ้าหน้าที่จะตอบกลับเร็วๆนี้</span>
+              </Col>
+            </Row>
+            <Row className="bg-white w-full p-4 rounded-b-lg">
+              <Col span={24}>
+                <button
+                  onClick={() => close()}
+                  className="w-full border bg-red-500 rounded text-white h-10"
+                >
+                  ปิดหน้านี้
+                </button>
               </Col>
             </Row>
           </Col>
@@ -93,10 +109,10 @@ function Index() {
                 <Col span={24}>
                   <Row>
                     <Col span={24} className="text-center text-4xl">
-                      <span>ติดต่อเจ้าหน้าที่</span>
+                      <span>สอบถามทั่วไป</span>
                     </Col>
                   </Row>
-                  <Row>
+                  {/* <Row>
                     <Col span={10}>เลือกพื้นที่รับผิดชอบ</Col>
                     <Col span={14}>
                       <select
@@ -119,7 +135,7 @@ function Index() {
                           ))}
                       </select>
                     </Col>
-                  </Row>
+                  </Row> */}
                   <Row className="mt-5">
                     <Col span={10}>ข้อความ</Col>
                     <Col span={14}>

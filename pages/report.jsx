@@ -8,6 +8,7 @@ import { Row, Col } from 'antd';
 import axios from 'axios';
 import Link from 'next/link';
 import { set } from 'nprogress';
+import exportFromJSON from 'export-from-json';
 
 function Report({ role, district, setRole, setDistrict }) {
   const optKind = [
@@ -31,6 +32,7 @@ function Report({ role, district, setRole, setDistrict }) {
   const [kind, setKind] = useState();
   const [currentpage, setCurrentpage] = useState(1);
   const [totalpage, setTotalpage] = useState();
+  const [allzone, setAllzone] = useState();
   const route = useRouter();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -44,6 +46,10 @@ function Report({ role, district, setRole, setDistrict }) {
         const res = snapshot.val();
         setRole(res.role);
         setDistrict(res.district);
+      });
+      onValue(ref(db, '/district'), snapshot => {
+        const res = snapshot.val();
+        setAllzone(res);
       });
     }
   }, [user]);
@@ -103,7 +109,7 @@ function Report({ role, district, setRole, setDistrict }) {
 
   const signout = () => {
     signOut(auth);
-    router.push('/index')
+    router.push('/index');
   };
 
   const complete = key => {
@@ -127,12 +133,63 @@ function Report({ role, district, setRole, setDistrict }) {
       });
   };
 
+  const exportCSV = () => {
+    let d;
+    if (kind == 'ทั้งหมด') {
+      d = fetchData.filter(value => value.status == status);
+    } else {
+      d = fetchData.filter(
+        value => value.status == status && value.kind == kind,
+      );
+    }
+
+    const data = [];
+    for (let i = 0; i < d.length; i++) {
+      let status = '';
+      switch (d[i].status) {
+        case 'active_zone':
+          status = 'รอการตรวจสอบ';
+          break;
+        case 'receive':
+          status = 'รับเรื่อง';
+          break;
+        default:
+          return;
+      }
+      data.push({
+        ลำดับ: i + 1,
+        วันเวลา: d[i].date || '',
+        รายละเอียด: d[i].message || '',
+        จาก: d[i].displayName || '',
+        ประเภท: d[i].kind || '',
+        พื้นที่รับผิดชอบ: allzone[d[i].zone_control] || '',
+        สถานะ: status,
+        ตำแหน่ง: d[i]?.location?.address || '',
+      });
+    }
+    const fileName =
+      status +
+      new Date().toLocaleString('en-GB', {
+        timeZone: 'Asia/Jakarta',
+      });
+    const exportType = exportFromJSON.types.xls;
+    exportFromJSON({ data, fileName, exportType });
+  };
+
   return (
     <>
       <div>
         <Sidebar signOut={signout} role={role} district={district} />
         <div className="pt-4 px-12">
           <div className="flex justify-end mb-4">
+            <div className="mr-4">
+              <button
+                className="h-full w-full p-1 rounded text-white bg-green-600"
+                onClick={() => exportCSV()}
+              >
+                Export
+              </button>
+            </div>
             <div className="mr-4">
               <button
                 className="h-full w-full p-1 rounded text-white bg-blue-600"
@@ -208,11 +265,14 @@ function Report({ role, district, setRole, setDistrict }) {
                     <th className="border-b border-r border-blue-700 w-[423px]">
                       รายละเอียด
                     </th>
-                    <th className="border-b border-r border-blue-700 w-28">
+                    <th className="border-b border-r border-blue-700 w-44">
                       จาก
                     </th>
-                    <th className="border-b border-r border-blue-700 w-48 ">
+                    <th className="border-b border-r border-blue-700 w-32 ">
                       ประเภท
+                    </th>
+                    <th className="border-b border-r border-blue-700 w-48 ">
+                      พื้นที่รับผิดชอบ
                     </th>
                     <th className="border-b border-l border-blue-700 w-48">
                       สถานะ
@@ -255,7 +315,7 @@ function Report({ role, district, setRole, setDistrict }) {
                           {item.message}
                         </th>
                         <th
-                          className="border-b border-r border-blue-700 w-28"
+                          className="border-b border-r border-blue-700 w-44"
                           onClick={() => {
                             router.push(`/Reply/${item.id}`);
                           }}
@@ -263,12 +323,15 @@ function Report({ role, district, setRole, setDistrict }) {
                           {item.displayName}
                         </th>
                         <th
-                          className="border-b border-r border-blue-700 w-48 "
+                          className="border-b border-r border-blue-700 w-32 "
                           onClick={() => {
                             router.push(`/Reply/${item.id}`);
                           }}
                         >
                           {item.kind}
+                        </th>
+                        <th className="border-b border-r border-blue-700 w-48 ">
+                          {allzone && item && <>{allzone[item.zone_control]}</>}
                         </th>
                         <th
                           className="border-b border-r border-blue-700 w-48"

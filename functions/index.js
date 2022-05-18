@@ -18,7 +18,7 @@ const LINE_HEADER = {
   Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
 };
 
-const NGROKURL = 'https://914f-2403-6200-8858-b01b-4db1-1ef4-d4a4-6592.ap.ngrok.io';
+const NGROKURL = 'https://4105-2001-fb1-103-f4fb-e8b9-c325-57cb-ef21.ngrok.io';
 const GIVERATE = NGROKURL + '/chatbot-49334/us-central1/giveRate?rate=';
 
 const reply = (replyToken, payload) => {
@@ -218,6 +218,7 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
     }
 
     if (req.body.type === 'complete') {
+      console.log(req.body);
       const db = admin.database();
       const ref = db.ref(`/order/${req.body.id}`);
       await ref.update({ status: 'complete' });
@@ -406,7 +407,7 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
     if (req.body.type === 'reply') {
       const db = admin.database();
       const ref = db.ref(`/order/${req.body.id}`);
-      await ref.update({ status: 'receive' });
+      await ref.update({ status: 'receive', reply: `${req.body.textReply}` });
       pushMessage(req.body.uid, [
         {
           type: 'flex',
@@ -586,6 +587,97 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
 
   if (fetchData.length > 0) {
     // console.log(kind.indexOf(message.text));
+
+    if (message.text == 'แจ้งปัญหา') {
+      await reply(event.replyToken, {
+        type: 'text',
+        text: 'โปรดเลือกประเภทปัญหาที่แจ้ง',
+        quickReply: {
+          items: [
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'ประปา',
+                text: 'ประปา',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'ไฟฟ้า',
+                text: 'ไฟฟ้า',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'ถนน',
+                text: 'ถนน',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'ต้นไม้',
+                text: 'ต้นไม้',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'ความสะอาด',
+                text: 'ความสะอาด',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'ทางเท้า',
+                text: 'ทางเท้า',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'จราจร จอดรถ',
+                text: 'จราจร จอดรถ',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'กลิ่น',
+                text: 'กลิ่น',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'เสียง',
+                text: 'เสียง',
+              },
+            },
+            {
+              type: 'action',
+              action: {
+                type: 'message',
+                label: 'อื่นๆ',
+                text: 'อื่นๆ',
+              },
+            },
+          ],
+        },
+      });
+    }
 
     if (kind.indexOf(message.text) > -1) {
       await db.ref(`/order/${fetchData[0].id}`).update({ kind: message.text });

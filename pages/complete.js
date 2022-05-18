@@ -6,6 +6,7 @@ import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { Row, Col } from 'antd';
 import Link from 'next/link';
+import exportFromJSON from 'export-from-json';
 
 function Home({ role, district, setDistrict, setRole }) {
   const optKind = [
@@ -28,6 +29,7 @@ function Home({ role, district, setDistrict, setRole }) {
   const [kind, setKind] = useState();
   const [currentpage, setCurrentpage] = useState(1);
   const [totalpage, setTotalpage] = useState();
+  const [allzone, setAllzone] = useState();
   const route = useRouter();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -41,6 +43,10 @@ function Home({ role, district, setDistrict, setRole }) {
         const res = snapshot.val();
         setRole(res.role);
         setDistrict(res.district);
+      });
+      onValue(ref(db, '/district'), snapshot => {
+        const res = snapshot.val();
+        setAllzone(res);
       });
     }
   }, [user]);
@@ -105,6 +111,48 @@ function Home({ role, district, setDistrict, setRole }) {
     signOut(auth);
     route.push('/index');
   };
+  const exportCSV = () => {
+    let d;
+    if (kind == 'ทั้งหมด') {
+      d = fetchData.filter(value => value.status == status);
+    } else {
+      d = fetchData.filter(
+        value => value.status == status && value.kind == kind,
+      );
+    }
+    const data = [];
+    for (let i = 0; i < d.length; i++) {
+      let status = '';
+      switch (d[i].status) {
+        case 'complete':
+          status = 'ดำเนินการเสร็จสิ้น';
+          break;
+        case 'notInvoled':
+          status = 'ไม่เกี่ยวข้อง';
+          break;
+        default:
+          return;
+      }
+      console.log(d[i]);
+      data.push({
+        ลำดับ: i + 1,
+        วันเวลา: d[i].date || '',
+        รายละเอียด: d[i].message || '',
+        จาก: d[i].displayName || '',
+        ประเภท: d[i].kind || '',
+        พื้นที่รับผิดชอบ: allzone[d[i].zone_control] || '',
+        สถานะ: status || '',
+        ตำแหน่ง: d[i]?.location?.address || '',
+      });
+    }
+    const fileName =
+      status +
+      new Date().toLocaleString('en-GB', {
+        timeZone: 'Asia/Jakarta',
+      });
+    const exportType = exportFromJSON.types.xls;
+    exportFromJSON({ data, fileName, exportType });
+  };
 
   return (
     <>
@@ -113,7 +161,14 @@ function Home({ role, district, setDistrict, setRole }) {
 
         <div className="pt-4 px-12">
           <div className="flex justify-end mb-4">
-            <div className="mr-4">
+            <div className="flex justify-end mr-4">
+              <button
+                className="h-full w-full p-1 rounded text-white bg-green-600 mr-4"
+                onClick={() => exportCSV()}
+              >
+                Export
+              </button>
+
               <button
                 className="h-full w-full p-1 rounded text-white bg-blue-600"
                 onClick={() => reset()}
@@ -193,7 +248,7 @@ function Home({ role, district, setDistrict, setRole }) {
                     <th className="border-b border-r border-blue-700 w-28">
                       ประเภท
                     </th>
-                    {role === 1 ? (
+                    {role === 1 && status != 'notInvoled' ? (
                       <th className="border-b border-r border-blue-700 w-48 ">
                         พื้นที่รับผิดชอบ
                       </th>
@@ -249,17 +304,16 @@ function Home({ role, district, setDistrict, setRole }) {
                         >
                           {item.kind}
                         </th>
-                        {role === 1 ? (
+                        {role === 1 && status != 'notInvoled' ? (
                           <th
                             className="border-b border-r border-blue-700 w-48 "
                             onClick={() => {
                               router.push(`/Reply/${item.id}`);
                             }}
                           >
-                            {item.zone_control == 1 && <>ศรีวิชัย</>}
-                            {item.zone_control == 2 && <>นครพิงค์</>}
-                            {item.zone_control == 3 && <>เม็งราย</>}
-                            {item.zone_control == 4 && <>กาวิละ</>}
+                            {allzone && item && (
+                              <>{allzone[item.zone_control]}</>
+                            )}
                           </th>
                         ) : (
                           <></>

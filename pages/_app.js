@@ -15,6 +15,7 @@ function MyApp({ Component, pageProps }) {
       <Head>
         {/* Import CSS for nprogress */}
         <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+        <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
       </Head>
       <Component
         {...pageProps}
