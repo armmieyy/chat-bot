@@ -18,7 +18,7 @@ const LINE_HEADER = {
   Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
 };
 
-const NGROKURL = 'https://4105-2001-fb1-103-f4fb-e8b9-c325-57cb-ef21.ngrok.io';
+const NGROKURL = 'https://c8de-2001-fb1-103-f4fb-e8b9-c325-57cb-ef21.ngrok.io';
 const GIVERATE = NGROKURL + '/chatbot-49334/us-central1/giveRate?rate=';
 
 const reply = (replyToken, payload) => {
@@ -91,19 +91,29 @@ exports.createUser = functions.https.onRequest(async (req, res) => {
 
 exports.giveRate = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    console.log(req.query.rate);
+    console.log(req.query);
     const db = admin.database();
-    db.ref('/rate/n').transaction(current_value => {
-      return (current_value || 0) + 1;
+    let order = [];
+    db.ref(`/order/${req.query.id}`).once('value', snapshot => {
+      const data = snapshot.val();
+      if (!data.giveRate) {
+        db.ref(`/order/${req.query.id}`).update({ giveRate: req.query.rate });
+        db.ref('/rate/n').transaction(current_value => {
+          return (current_value || 0) + 1;
+        });
+        db.ref('/rate/score').transaction(current_value => {
+          return (current_value || 0) + parseInt(req.query.rate);
+        });
+        db.ref(`/rate/${req.query.rate}`).transaction(current_value => {
+          return (current_value || 0) + 1;
+        });
+        console.log(req.body);
+        return res.redirect('https://chatbot-49334.web.app/thankyou.html');
+        // res.redirect('https://chatbot-49334.web.app/thankyou.html?');
+      } else {
+        res.redirect('https://chatbot-49334.web.app/thankyou.html?give=true');
+      }
     });
-    db.ref('/rate/score').transaction(current_value => {
-      return (current_value || 0) + parseInt(req.query.rate);
-    });
-    db.ref(`/rate/${req.query.rate}`).transaction(current_value => {
-      return (current_value || 0) + 1;
-    });
-    console.log(req.body);
-    res.redirect('https://chatbot-49334.web.app/thankyou.html');
   });
 });
 
@@ -336,7 +346,9 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
                       action: {
                         type: 'uri',
                         label: '1',
-                        uri: `${GIVERATE + 1}&uid=${req.body.uid}`,
+                        uri: `${GIVERATE + 1}&uid=${req.body.uid}&id=${
+                          req.body.id
+                        }`,
                       },
                       color: '#87B7FF',
                       style: 'primary',
@@ -351,7 +363,9 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
                       action: {
                         type: 'uri',
                         label: '2',
-                        uri: `${GIVERATE + 2}&uid=${req.body.uid}`,
+                        uri: `${GIVERATE + 2}&uid=${req.body.uid}&id=${
+                          req.body.id
+                        }`,
                       },
                       style: 'primary',
                       color: '#73ACFF',
@@ -361,7 +375,9 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
                       action: {
                         type: 'uri',
                         label: '3',
-                        uri: `${GIVERATE + 3}&uid=${req.body.uid}`,
+                        uri: `${GIVERATE + 3}&uid=${req.body.uid}&id=${
+                          req.body.id
+                        }`,
                       },
                       style: 'primary',
                       color: '#4A93FF',
@@ -371,7 +387,9 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
                       action: {
                         type: 'uri',
                         label: '4',
-                        uri: `${GIVERATE + 4}&uid=${req.body.uid}`,
+                        uri: `${GIVERATE + 4}&uid=${req.body.uid}&id=${
+                          req.body.id
+                        }`,
                       },
                       style: 'primary',
                       color: '#2F83FF',
@@ -381,7 +399,9 @@ exports.messageReply = functions.https.onRequest(async (req, res) => {
                       action: {
                         type: 'uri',
                         label: '5',
-                        uri: `${GIVERATE + 5}&uid=${req.body.uid}`,
+                        uri: `${GIVERATE + 5}&uid=${req.body.uid}&id=${
+                          req.body.id
+                        }`,
                       },
                       style: 'primary',
                       color: '#1271FF',

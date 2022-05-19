@@ -336,6 +336,15 @@ function Reply({ role, setRole }) {
                     >
                       ไม่เกี่ยวข้อง
                     </button>
+                    <button
+                      className="p-2 bg-red-500 text-md border border-red-700 hover:bg-red-700 
+              rounded-lg text-white"
+                      onClick={() => {
+                        router.push(`/${router.query.from || ''}`);
+                      }}
+                    >
+                      ยกเลิก
+                    </button>
                   </Row>
                 </Col>
               </>

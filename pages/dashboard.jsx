@@ -128,7 +128,11 @@ function Dashboard({ role, district, setDistrict, setRole }) {
   return (
     <>
       <Sidebar signOut={signout} role={role} district={district}/>
+
+
+
       <div className="pt-4 px-12">
+
         <Row>
           <Col span={16}>
             <Row className="">

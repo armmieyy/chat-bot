@@ -102,7 +102,7 @@ function Management({ role, district }) {
 
   const signout = () => {
     signOut(auth);
-    route.push('/index')
+    route.push('/index');
   };
 
   const complete = key => {
@@ -129,7 +129,7 @@ function Management({ role, district }) {
   return (
     <>
       <div>
-        <Sidebar signOut={signout} role={role} district={district}/>
+        <Sidebar signOut={signout} role={role} district={district} />
 
         <div className="pt-4 px-12">
           <div className="flex justify-end mb-4">
@@ -239,14 +239,14 @@ function Management({ role, district }) {
                         key={item.id}
                         className="cursor-pointer hover:bg-blue-100 h-10 border border-blue-700"
                       >
-                        <Link href={`/Reply/${item.id}`}>
+                        <Link href={`/Reply/${item.id}?from=management`}>
                           <th className="border-b border-r border-blue-700 w-48">
                             {currentpage === 1 && index + 1}
                             {currentpage > 1 &&
                               index + 1 + currentpage * 10 - 10}
                           </th>
                         </Link>
-                        <Link href={`/Reply/${item.id}`}>
+                        <Link href={`/Reply/${item.id}?from=management`}>
                           <th className="border-b border-r border-blue-700 w-48">
                             {item.date}
                           </th>
@@ -255,7 +255,7 @@ function Management({ role, district }) {
                         <th
                           className="border-b border-r border-blue-700 w-[423px]"
                           onClick={() => {
-                            router.push(`/Reply/${item.id}`);
+                            router.push(`/Reply/${item.id}?from=management`);
                           }}
                         >
                           {item.message}
@@ -263,7 +263,7 @@ function Management({ role, district }) {
                         <th
                           className="border-b border-r border-blue-700 w-32"
                           onClick={() => {
-                            router.push(`/Reply/${item.id}`);
+                            router.push(`/Reply/${item.id}?from=management`);
                           }}
                         >
                           {item.displayName}
@@ -271,7 +271,7 @@ function Management({ role, district }) {
                         <th
                           className="border-b border-r border-blue-700 w-48 "
                           onClick={() => {
-                            router.push(`/Reply/${item.id}`);
+                            router.push(`/Reply/${item.id}?from=management`);
                           }}
                         >
                           {item.kind}
@@ -280,7 +280,7 @@ function Management({ role, district }) {
                           <th
                             className="border-b border-r border-blue-700 w-48 "
                             onClick={() => {
-                              router.push(`/Reply/${item.id}`);
+                              router.push(`/Reply/${item.id}?from=management`);
                             }}
                           >
                             {item.zone_control == 1 && <>ศรีวิชัย</>}
@@ -294,7 +294,7 @@ function Management({ role, district }) {
                         <th
                           className="border-b border-r border-blue-700 w-48"
                           onClick={() => {
-                            router.push(`/Reply/${item.id}`);
+                            router.push(`/Reply/${item.id}?from=management`);
                           }}
                         >
                           {item.status === 'wait' && 'รอลงเขตรับผิดชอบ'}

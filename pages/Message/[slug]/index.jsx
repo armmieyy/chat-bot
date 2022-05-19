@@ -34,6 +34,13 @@ function Index({ role, setRole, district, setDistrict }) {
     });
   }, [route]);
 
+  useEffect(() => {
+    if (!role) return;
+    if (role == 1) return;
+
+    route.push('/dashboard');
+  }, [role]);
+
   const sendReply = () => {
     const payload = {
       type: 'replyChat',
@@ -89,7 +96,7 @@ function Index({ role, setRole, district, setDistrict }) {
               </Col>
               <Col span={18} className="border-b">
                 <span className="text-3xl">
-                  {allzone && fetchData.zone ? allzone[fetchData.zone] : <></>}
+                  {allzone && fetchData?.zone ? allzone[fetchData.zone] : <></>}
                 </span>
               </Col>
             </Row>
@@ -136,7 +143,7 @@ function Index({ role, setRole, district, setDistrict }) {
           </Col>
         </Row>
         <Row justify="end" className=" mt-5 mb-10">
-          <Col>
+          <Col className="space-x-2">
             <button
               className="p-5  border text-xl bg-blue-600 text-white
              rounded-lg hover:opacity-75"
@@ -144,6 +151,14 @@ function Index({ role, setRole, district, setDistrict }) {
               hidden={fetchData?.reply}
             >
               ส่งข้อความ
+            </button>
+            <button
+              className="p-5  border text-xl bg-red-600 text-white
+             rounded-lg hover:opacity-75"
+              onClick={() => route.push(`/Message`)}
+              hidden={fetchData?.reply}
+            >
+              ยกเลิก
             </button>
           </Col>
         </Row>

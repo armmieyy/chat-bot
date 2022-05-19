@@ -112,14 +112,15 @@ function Home({ role, district, setDistrict, setRole }) {
     route.push('/index');
   };
   const exportCSV = () => {
-    let d;
-    if (kind == 'ทั้งหมด') {
-      d = fetchData.filter(value => value.status == status);
-    } else {
-      d = fetchData.filter(
-        value => value.status == status && value.kind == kind,
-      );
-    }
+    let d = fillterData;
+    // if (kind == 'ทั้งหมด') {
+    //   d = fillterData.filter(value => value.status == status);
+    //   console.log(d)
+    // } else {
+    //   d = fillterData.filter(
+    //     value => value.status == status && value.kind == kind,
+    //   );
+
     const data = [];
     for (let i = 0; i < d.length; i++) {
       let status = '';
@@ -141,6 +142,7 @@ function Home({ role, district, setDistrict, setRole }) {
         จาก: d[i].displayName || '',
         ประเภท: d[i].kind || '',
         พื้นที่รับผิดชอบ: allzone[d[i].zone_control] || '',
+        คะแนนความพึงพอใจ: d[i]?.giveRate || '-',
         สถานะ: status || '',
         ตำแหน่ง: d[i]?.location?.address || '',
       });
@@ -160,6 +162,7 @@ function Home({ role, district, setDistrict, setRole }) {
         <Sidebar signOut={signout} role={role} district={district} />
 
         <div className="pt-4 px-12">
+          <Row></Row>
           <div className="flex justify-end mb-4">
             <div className="flex justify-end mr-4">
               <button
@@ -239,7 +242,7 @@ function Home({ role, district, setDistrict, setRole }) {
                     <th className="border-b border-r  border-blue-700 w-48">
                       วัน เวลา
                     </th>
-                    <th className="border-b border-r border-blue-700 w-[423px]">
+                    <th className="border-b border-r border-blue-700 w-96">
                       รายละเอียด
                     </th>
                     <th className="border-b border-r border-blue-700 w-32">
@@ -248,14 +251,18 @@ function Home({ role, district, setDistrict, setRole }) {
                     <th className="border-b border-r border-blue-700 w-28">
                       ประเภท
                     </th>
+
                     {role === 1 && status != 'notInvoled' ? (
-                      <th className="border-b border-r border-blue-700 w-48 ">
+                      <th className="border-b border-r border-blue-700 w-32 ">
                         พื้นที่รับผิดชอบ
                       </th>
                     ) : (
                       <></>
                     )}
-                    <th className="border-b border-l border-blue-700 w-48">
+                    <th className="border-b border-r border-blue-700 w-28">
+                      คะแนนความพึงพอใจ
+                    </th>
+                    <th className="border-b border-l border-blue-700 w-28">
                       สถานะ
                     </th>
                   </tr>
@@ -267,23 +274,23 @@ function Home({ role, district, setDistrict, setRole }) {
                         key={item.id}
                         className="cursor-pointer hover:bg-blue-100 h-10 border border-blue-700"
                       >
-                        <Link href={`/Reply/${item.id}`}>
+                        <Link href={`/Reply/${item.id}?from=complete`}>
                           <th className="border-b border-r border-blue-700 w-48">
                             {currentpage === 1 && index + 1}
                             {currentpage > 1 &&
                               index + 1 + currentpage * 10 - 10}
                           </th>
                         </Link>
-                        <Link href={`/Reply/${item.id}`}>
+                        <Link href={`/Reply/${item.id}?from=complete`}>
                           <th className="border-b border-r border-blue-700 w-48">
                             {item.date}
                           </th>
                         </Link>
 
                         <th
-                          className="border-b border-r border-blue-700 w-[423px]"
+                          className="border-b border-r border-blue-700 w-96"
                           onClick={() => {
-                            router.push(`/Reply/${item.id}`);
+                            router.push(`/Reply/${item.id}?from=complete`);
                           }}
                         >
                           {item.message}
@@ -291,7 +298,7 @@ function Home({ role, district, setDistrict, setRole }) {
                         <th
                           className="border-b border-r border-blue-700 w-32"
                           onClick={() => {
-                            router.push(`/Reply/${item.id}`);
+                            router.push(`/Reply/${item.id}?from=complete`);
                           }}
                         >
                           {item.displayName}
@@ -299,16 +306,17 @@ function Home({ role, district, setDistrict, setRole }) {
                         <th
                           className="border-b border-r border-blue-700 w-48 "
                           onClick={() => {
-                            router.push(`/Reply/${item.id}`);
+                            router.push(`/Reply/${item.id}?from=complete`);
                           }}
                         >
                           {item.kind}
                         </th>
+
                         {role === 1 && status != 'notInvoled' ? (
                           <th
-                            className="border-b border-r border-blue-700 w-48 "
+                            className="border-b border-r border-blue-700 w-24 "
                             onClick={() => {
-                              router.push(`/Reply/${item.id}`);
+                              router.push(`/Reply/${item.id}?from=complete`);
                             }}
                           >
                             {allzone && item && (
@@ -318,10 +326,13 @@ function Home({ role, district, setDistrict, setRole }) {
                         ) : (
                           <></>
                         )}
+                        <th className="border-b border-r border-blue-700 w-28">
+                          {item?.giveRate ? item.giveRate : <>-</>}
+                        </th>
                         <th
                           className="border-b border-r border-blue-700 w-48"
                           onClick={() => {
-                            router.push(`/Reply/${item.id}`);
+                            router.push(`/Reply/${item.id}?from=complete`);
                           }}
                         >
                           {item.status === 'complete' && (
