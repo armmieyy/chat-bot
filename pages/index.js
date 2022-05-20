@@ -63,7 +63,7 @@ function Login({ setRole, setDistrict, setUser }) {
         <div className=" pb-8 m-auto">
           <center>
             {/* <img className="h-auto w-auto" src={'assets/images/chat-bot.png'} /> */}
-            <img className="h-72 w-auto" src={'http://www.cmcity.go.th/data/content/2019/31/cms/big/bgknqstuv356.png'} />
+            <img className="h-72 w-auto" src={'assets/images/bgcm.png'} />
           </center>
         </div>
         <Form
