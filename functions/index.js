@@ -18,7 +18,7 @@ const LINE_HEADER = {
   Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
 };
 
-const NGROKURL = 'https://c8de-2001-fb1-103-f4fb-e8b9-c325-57cb-ef21.ngrok.io';
+const NGROKURL = 'https://97b0-2403-6200-8858-b01b-ecc8-497b-6ffd-c906.ap.ngrok.io';
 const GIVERATE = NGROKURL + '/chatbot-49334/us-central1/giveRate?rate=';
 
 const reply = (replyToken, payload) => {
@@ -769,7 +769,7 @@ exports.helloWorld = functions.https.onRequest(async (req, res) => {
           fs.unlinkSync(originalLocalFile);
           await reply(event.replyToken, {
             type: 'text',
-            text: 'โปรดส่งตำแหน่งที่ตั้ง',
+            text: 'โปรดส่งพิกัดสถานที่',
             quickReply: {
               items: [
                 {

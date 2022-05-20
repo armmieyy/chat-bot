@@ -109,7 +109,7 @@ function Index() {
                 <Col span={24}>
                   <Row>
                     <Col span={24} className="text-center text-4xl">
-                      <span>สอบถามทั่วไป</span>
+                      <span>สอบถามข้อมูลทั่วไป</span>
                     </Col>
                   </Row>
                   {/* <Row>
