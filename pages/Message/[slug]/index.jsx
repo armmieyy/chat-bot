@@ -90,16 +90,7 @@ function Index({ role, setRole, district, setDistrict }) {
                 </span>
               </Col>
             </Row>
-            <Row className="mt-5">
-              <Col span={5}>
-                <span className="text-3xl">พื้นที่รับผิดชอบ</span>
-              </Col>
-              <Col span={18} className="border-b">
-                <span className="text-3xl">
-                  {allzone && fetchData?.zone ? allzone[fetchData.zone] : <></>}
-                </span>
-              </Col>
-            </Row>
+            
             <Row className="mt-5">
               <Col span={5}>
                 <span className="text-3xl">ข้อความ</span>
