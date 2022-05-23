@@ -182,7 +182,8 @@ function Reply({ role, setRole }) {
                     role == 2 ||
                     fetchData.status === 'complete' ||
                     fetchData.status === 'notInvoled' ||
-                    fetchData.status == 'active_zone'
+                    fetchData.status == 'active_zone' ||
+                    fetchData.status === 'receive'
                       ? true
                       : false
                   }
