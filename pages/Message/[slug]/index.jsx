@@ -54,7 +54,7 @@ function Index({ role, setRole, district, setDistrict }) {
     };
 
     axios
-      .post(API + 'chatbot-49334/us-central1/messageReply', payload)
+      .post(API + '/messageReply', payload)
       .then(res => {
         if (res.data == 'ok') {
           route.push('/Message');

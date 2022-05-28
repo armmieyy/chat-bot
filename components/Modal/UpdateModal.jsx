@@ -14,7 +14,7 @@ function UpdateModal({ user, setUpdateModal }) {
     setErrmsg('');
 
     axios
-      .post(API + 'chatbot-49334/us-central1/updateUserById', selectUser)
+      .post(process.env.NEXT_PUBLIC_API_FUNCTION + '/updateUserById', selectUser)
       .then(res => {
         if (res.data == 'ok') {
           setUpdateModal(<></>);

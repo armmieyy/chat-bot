@@ -58,7 +58,7 @@ function Reply({ role, setRole }) {
   const sendReply = async () => {
     await axios({
       method: 'post',
-      url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
+      url: process.env.NEXT_PUBLIC_API_FUNCTION + '/messageReply',
       data: {
         type: 'reply',
         id: slug,
@@ -83,7 +83,7 @@ function Reply({ role, setRole }) {
   const save = async (zone, id) => {
     axios({
       method: 'post',
-      url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
+      url: process.env.NEXT_PUBLIC_API_FUNCTION + '/messageReply',
       data: {
         id: id,
         type: 'zone_control',
@@ -101,7 +101,7 @@ function Reply({ role, setRole }) {
   const notInvoled = async () => {
     await axios({
       method: 'post',
-      url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
+      url: process.env.NEXT_PUBLIC_API_FUNCTION + '/messageReply',
       data: {
         type: 'notInvoled',
         id: slug,
@@ -124,7 +124,7 @@ function Reply({ role, setRole }) {
   const complete = () => {
     axios({
       method: 'post',
-      url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
+      url: process.env.NEXT_PUBLIC_API_FUNCTION + '/messageReply',
       data: {
         id: slug,
         uid: fetchData.uid,

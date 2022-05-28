@@ -32,7 +32,7 @@ function DeleteModal({
               className="bg-red-500 text-white w-1/2 rounded-lg p-1 hover:opacity-70"
               onClick={() => {
                 console.log(user);
-                axios.post(API + 'chatbot-49334/us-central1/deleteUserById', {
+                axios.post(API + '/deleteUserById', {
                   uid: user.id,
                 });
                 remove(refUser);

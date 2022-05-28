@@ -110,7 +110,7 @@ function Management({ role, district }) {
     const data = arr[0];
     axios({
       method: 'post',
-      url: 'http://localhost:5001/chatbot-49334/us-central1/messageReply',
+      url: process.env.NEXT_PUBLIC_API_FUNCTION + '/messageReply',
       data: {
         id: key,
         uid: data.uid,

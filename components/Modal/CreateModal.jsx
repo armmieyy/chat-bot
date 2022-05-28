@@ -17,7 +17,7 @@ function CreateModal({ allzone, setModalCreateUser }) {
       return;
     } else {
       axios
-        .post(API + 'chatbot-49334/us-central1/createUser', user)
+        .post(API + '/createUser', user)
         .then(res => {
           if (res.data == 'ok') setModalCreateUser(<></>);
           if (res.data == 'auth/email-already-exists')
