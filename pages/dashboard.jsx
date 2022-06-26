@@ -147,12 +147,16 @@ function Dashboard({ role, district, setDistrict, setRole }) {
                 value={stat?.wait && stat.wait}
               />
               <Card
+                label={'ลงเขตรับผิดชอบแล้ว'}
+                value={stat?.active_zone && stat.active_zone}
+              />
+              <Card
                 label={'รอการตรวจสอบ'}
                 value={stat?.active_zone && stat.active_zone}
               />
-              <Card label={'รับเรื่อง'} value={stat?.receive && stat.receive} />
             </Row>
             <Row className="mt-1 space-x-1">
+            <Card label={'รับเรื่อง'} value={stat?.receive && stat.receive} />
               <Card
                 label={'ดำเนินการเสร็จสิ้น'}
                 value={stat?.complete && stat.complete}
