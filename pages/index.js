@@ -66,6 +66,13 @@ function Login({ setRole, setDistrict, setUser }) {
             <img className="h-72 w-auto" src={'assets/images/bgcm.png'} />
           </center>
         </div>
+        <div className=" pb-8 m-auto">
+          <center>
+            <div className="text-2xl text-white font-bold uppercase tracking-wide">
+              ไลน์แชทบอทสำหรับแจ้งปัญหาในชุมชน
+            </div>
+          </center>
+        </div>
         <Form
           className="px-8 pt-2 pb-8 mb-4 pd-12"
           name="basic"
