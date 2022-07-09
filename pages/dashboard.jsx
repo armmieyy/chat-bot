@@ -247,7 +247,7 @@ function Dashboard({ role, district, setDistrict, setRole }) {
             </Col>
           </Row>
           <Row className="mb-10">
-            <Col span={6}></Col>
+            <Col span={10}></Col>
             <Col span={4} className="pt-36 mb-5  px-12">
               <span className="text-4xl">
                 {rating && (rating.score / rating.n).toFixed(1)} <br />
@@ -258,9 +258,6 @@ function Dashboard({ role, district, setDistrict, setRole }) {
                 จำนวนครั้ง {rating && rating.n}
               </span>
             </Col>
-            <div className="flex mr-8 w-1/2">
-              {rating && <RatingBar data={rating} />}
-            </div>
           </Row>
         </>
       ) : (
